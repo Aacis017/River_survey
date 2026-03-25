@@ -9,6 +9,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Turf.js/6.5.0/turf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -20,8 +21,8 @@
   --mono:'Share Tech Mono',monospace;--display:'Rajdhani',sans-serif;
 }
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--display);overflow:hidden}
-.app{display:grid;grid-template-columns:320px 1fr;grid-template-rows:52px 1fr;height:100vh}
-.topbar{grid-column:1/-1;display:flex;align-items:center;gap:12px;background:var(--panel);border-bottom:1px solid var(--border);padding:0 18px}
+.app{display:grid;grid-template-columns:320px 1fr;grid-template-rows:52px 1fr;height:100vh;transition:grid-template-columns 0.25s ease}
+.topbar{grid-column:1/-1;display:flex;align-items:center;gap:10px;background:var(--panel);border-bottom:1px solid var(--border);padding:0 14px;z-index:100}
 .topbar h1{font-weight:700;font-size:1rem;letter-spacing:3px;color:#fff;text-transform:uppercase}
 .tag{font-family:var(--mono);font-size:0.6rem;color:var(--cyan);background:rgba(0,229,255,0.08);border:1px solid rgba(0,229,255,0.2);padding:2px 7px;border-radius:2px;letter-spacing:1px}
 .spacer{flex:1}
@@ -31,9 +32,36 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--d
 .lbl-toggle{display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:0.68rem;color:var(--text);cursor:pointer}
 .lbl-toggle input{accent-color:var(--cyan)}
 .sep{width:1px;height:22px;background:var(--border)}
+.locate-btn{position:absolute;bottom:38px;right:10px;z-index:1000;display:flex;align-items:center;justify-content:center;width:36px;height:36px;background:var(--panel);border:1.5px solid var(--border);border-radius:4px;color:var(--muted);cursor:pointer;transition:color 0.15s,border-color 0.15s,background 0.15s,box-shadow 0.15s;box-shadow:0 2px 10px rgba(0,0,0,0.5)}
+.locate-btn:hover{color:var(--cyan);border-color:var(--cyan);background:rgba(0,229,255,0.06);box-shadow:0 0 14px rgba(0,229,255,0.2)}
+.locate-btn.locating{color:var(--cyan);border-color:var(--cyan);animation:pulse-loc 1s infinite}
+.locate-btn.located{color:var(--cyan);border-color:var(--cyan);background:rgba(0,229,255,0.12);box-shadow:0 0 14px rgba(0,229,255,0.25)}
+@keyframes pulse-loc{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,229,255,0.4)}50%{opacity:0.7;box-shadow:0 0 0 6px rgba(0,229,255,0)}}
+.search-box{position:relative;display:flex;align-items:center}
+.search-box input{width:200px;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:5px 28px 5px 28px;outline:none;border-radius:2px;transition:border-color 0.15s,width 0.2s}
+.search-box input:focus{border-color:var(--cyan);width:240px}
+.search-box input::placeholder{color:var(--muted)}
+.search-icon{position:absolute;left:8px;color:var(--muted);font-size:0.75rem;pointer-events:none}
+.search-clear{position:absolute;right:7px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.7rem;padding:0;display:none;line-height:1}
+.search-clear:hover{color:var(--text)}
+.search-dropdown{position:absolute;top:calc(100% + 5px);left:0;right:0;background:var(--panel);border:1px solid var(--border);border-radius:3px;z-index:9999;display:none;box-shadow:0 8px 24px rgba(0,0,0,0.6);max-height:220px;overflow-y:auto}
+.search-dropdown.open{display:block}
+.search-item{padding:8px 10px;cursor:pointer;border-bottom:1px solid var(--border);transition:background 0.1s}
+.search-item:last-child{border-bottom:none}
+.search-item:hover{background:rgba(0,229,255,0.07)}
+.search-item-name{font-family:var(--mono);font-size:0.72rem;color:var(--text)}
+.search-item-sub{font-family:var(--mono);font-size:0.6rem;color:var(--muted);margin-top:2px}
+.search-msg{padding:10px;font-family:var(--mono);font-size:0.68rem;color:var(--muted);text-align:center}
+
+.sidebar-toggle{background:none;border:1px solid var(--border);color:var(--text);width:32px;height:32px;border-radius:3px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;transition:all 0.15s}
+.sidebar-toggle:hover{border-color:var(--cyan);color:var(--cyan)}
 .sidebar{background:var(--panel);border-right:1px solid var(--border);overflow-y:auto;overflow-x:hidden}
+.app.sb-closed{grid-template-columns:0px 1fr}
+.app.sb-closed .sidebar{width:0;min-width:0;overflow:hidden;border:none}
 .sidebar::-webkit-scrollbar{width:4px}
 .sidebar::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+
 
 /* COLLAPSIBLE - clean implementation */
 .c-head{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;cursor:pointer;font-family:var(--mono);font-size:0.62rem;letter-spacing:1.5px;color:var(--text);text-transform:uppercase;background:rgba(255,255,255,0.02);border-top:1px solid var(--border);user-select:none}
@@ -108,7 +136,81 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--d
 .dist-label{background:transparent!important;border:none!important;box-shadow:none!important}
 .dist-label-inner{font-family:'Share Tech Mono',monospace;font-size:11px;font-weight:bold;padding:2px 5px;border-radius:3px;white-space:nowrap;pointer-events:none;text-shadow:0 0 6px #000,0 0 3px #000}
 .dist-label-inner.wide{color:#ff3d3d;background:rgba(0,0,0,0.65);border:1px solid rgba(255,61,61,0.5)}
+.dist-label-inner.warn{color:#ffe600;background:rgba(0,0,0,0.65);border:1px solid rgba(255,230,0,0.5)}
 .dist-label-inner.ok{color:#00e676;background:rgba(0,0,0,0.65);border:1px solid rgba(0,230,118,0.35)}
+
+
+/* ── VTOL SELECTOR ── */
+.vtol-section{padding:10px 12px 14px}
+.vtol-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px}
+.vtol-card{position:relative;padding:8px 8px 7px;border:1px solid var(--border);border-radius:4px;cursor:pointer;transition:all 0.15s;background:var(--panel2)}
+.vtol-card:hover{border-color:rgba(0,229,255,0.4);background:rgba(0,229,255,0.04)}
+.vtol-card.selected{border-color:var(--cyan);background:rgba(0,229,255,0.08);box-shadow:0 0 12px rgba(0,229,255,0.12)}
+.vtol-card.custom-card{grid-column:1/-1;display:grid;grid-template-columns:1fr;gap:0}
+.vtol-name{font-family:var(--display);font-weight:700;font-size:0.75rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vtol-cat{font-family:var(--mono);font-size:0.55rem;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px}
+.vtol-cat.small{color:#00e676}.vtol-cat.medium{color:#ffe600}.vtol-cat.large{color:#ff6d00}.vtol-cat.custom{color:#b47cff}
+
+.vtol-img{width:100%;height:52px;display:flex;align-items:center;justify-content:center;margin:5px 0 4px;overflow:hidden}
+.vtol-img svg{width:100%;height:100%;max-height:52px}
+.vtol-img img{width:100%;height:52px;object-fit:contain;filter:drop-shadow(0 0 4px rgba(0,229,255,0.3))}
+.vtol-specs{margin-top:5px;display:flex;flex-direction:column;gap:2px}
+.vtol-spec-corridor{cursor:help;border-bottom:1px dashed rgba(192,208,232,0.3);} .vtol-spec{display:flex;justify-content:space-between;font-family:var(--mono);font-size:0.6rem}
+.vtol-spec-k{color:var(--muted)}.vtol-spec-v{color:var(--cyan)}
+.vtol-select-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;border:1.5px solid var(--border);background:transparent;transition:all 0.15s}
+.vtol-card.selected .vtol-select-dot{background:var(--cyan);border-color:var(--cyan);box-shadow:0 0 6px var(--cyan)}
+.vtol-span-svg{width:100%;height:20px;margin:5px 0 2px}
+.custom-inputs{display:flex;flex-direction:column;gap:5px;flex:1}
+.custom-row{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:0.65rem;color:var(--muted)}
+.custom-row input{flex:1;background:var(--bg);border:1px solid var(--border);color:var(--cyan);font-family:var(--mono);font-size:0.72rem;padding:4px 6px;text-align:right;outline:none;border-radius:2px;width:70px}
+.custom-row input:focus{border-color:var(--cyan)}
+
+
+/* ── FIXED-WING TURNAROUND CORRIDOR ── */
+.turn-section{margin-top:7px;padding-top:6px;border-top:1px solid rgba(0,229,255,0.12)}
+.turn-section-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.turn-section-title{font-family:var(--mono);font-size:0.55rem;letter-spacing:1px;text-transform:uppercase;color:rgba(0,229,255,0.55)}
+.turn-badge{font-family:var(--mono);font-size:0.48rem;padding:1px 5px;border-radius:2px;background:rgba(0,229,255,0.08);border:1px solid rgba(0,229,255,0.2);color:rgba(0,229,255,0.6);white-space:nowrap}
+.turn-row{display:flex;justify-content:space-between;font-family:var(--mono);font-size:0.58rem;padding:1.5px 0}
+.turn-k{color:var(--muted)}
+.turn-v{color:var(--cyan)}
+.turn-v.warn{color:var(--yellow)}
+.turn-v.danger{color:var(--red)}
+.turn-v.highlight{color:#fff;font-weight:bold}
+.turn-breakdown{margin-top:5px;padding:5px 7px;background:rgba(0,0,0,0.3);border-radius:3px;border-left:2px solid rgba(0,229,255,0.25);font-family:var(--mono);font-size:0.52rem;color:var(--muted);line-height:1.7;cursor:help}
+.turn-breakdown span{color:rgba(192,208,232,0.7)}
+.turn-warn-msg{margin-top:4px;font-family:var(--mono);font-size:0.55rem;padding:3px 6px;border-radius:2px;background:rgba(255,230,0,0.07);border-left:2px solid var(--yellow);color:var(--yellow)}
+.turn-err-msg{margin-top:4px;font-family:var(--mono);font-size:0.55rem;padding:3px 6px;border-radius:2px;background:rgba(255,61,61,0.07);border-left:2px solid var(--red);color:var(--red)}
+
+/* ── MISSION REPORT banner ── */
+.mission-report{margin:0 12px 10px;border-radius:4px;overflow:hidden;border:1px solid var(--border)}
+.mission-header{display:flex;align-items:center;gap:8px;padding:9px 12px;font-family:var(--display);font-weight:700;font-size:0.85rem;letter-spacing:1px}
+.mission-header.go{background:rgba(0,230,118,0.12);border-bottom:1px solid rgba(0,230,118,0.2);color:var(--green)}
+.mission-header.nogo{background:rgba(255,61,61,0.10);border-bottom:1px solid rgba(255,61,61,0.2);color:var(--red)}
+.mission-header.partial{background:rgba(255,230,0,0.08);border-bottom:1px solid rgba(255,230,0,0.2);color:var(--yellow)}
+.mission-body{padding:8px 12px;display:flex;flex-direction:column;gap:5px;background:var(--panel2)}
+.mission-row{display:flex;justify-content:space-between;align-items:center}
+.mission-k{font-family:var(--mono);font-size:0.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px}
+.mission-v{font-family:var(--mono);font-size:0.82rem;font-weight:bold}
+.mission-bar-wrap{margin-top:6px;height:6px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden}
+.mission-bar{height:100%;border-radius:3px;transition:width 0.5s ease}
+.mission-bar.go{background:var(--green)}.mission-bar.partial{background:var(--yellow)}.mission-bar.nogo{background:var(--red)}
+.mission-header.warning{background:rgba(255,230,0,0.08);border-bottom:1px solid rgba(255,230,0,0.2);color:var(--yellow)}
+.t-item.warn{border-left-color:#ffe600}
+.t-w.warn{color:#ffe600}
+.t-badge.warn{background:rgba(255,230,0,0.12);color:#ffe600}
+
+/* ── SWEETALERT DARK THEME ── */
+.swal-vtol-popup{border:1px solid #162236!important;border-radius:6px!important;font-family:'Rajdhani',sans-serif!important}
+.swal-vtol-title{font-family:'Share Tech Mono',monospace!important;font-size:1rem!important;letter-spacing:2px!important;text-transform:uppercase!important}
+.swal-vtol-html{font-family:'Rajdhani',sans-serif!important}
+.swal-vtol-confirm{font-family:'Share Tech Mono',monospace!important;font-size:0.75rem!important;letter-spacing:1px!important;border-radius:2px!important;color:#000!important;font-weight:bold!important}
+.swal-vtol-cancel{font-family:'Share Tech Mono',monospace!important;font-size:0.75rem!important;letter-spacing:1px!important;border-radius:2px!important}
+.swal2-timer-progress-bar{background:#00e5ff!important}
+.swal2-icon.swal2-error{border-color:#ff3d3d!important}
+.swal2-icon.swal2-warning{border-color:#ffe600!important}
+.swal2-icon.swal2-success{border-color:#00e676!important}
+.swal2-icon.swal2-info{border-color:#00e5ff!important}
 .leaflet-control-layers{background:var(--panel)!important;border:1px solid var(--border)!important;color:var(--text)!important;font-family:var(--mono)!important;font-size:0.68rem!important;box-shadow:0 4px 16px rgba(0,0,0,0.5)!important}
 .leaflet-control-layers label{color:var(--text)!important}
 .leaflet-control-layers-separator{border-color:var(--border)!important}
@@ -119,20 +221,31 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--d
 <div class="app">
 
 <div class="topbar">
+  <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()" title="Toggle Panel">☰</button>
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="1" y="1" width="22" height="22" rx="2" stroke="#00e5ff" stroke-width="1.5"/><path d="M3 12 Q7 5 12 12 Q17 19 21 12" stroke="#00e5ff" stroke-width="1.5"/></svg>
   <h1>River Survey</h1>
   <span class="tag">VTOL MISSION</span>
   <div class="spacer"></div>
+
+  <!-- LOCATION SEARCH -->
+  <div class="search-box" id="searchBox">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="Search city or place..." autocomplete="off" spellcheck="false">
+    <button class="search-clear" id="searchClear">✕</button>
+    <div class="search-dropdown" id="searchDropdown"></div>
+  </div>
+
+  <div class="sep"></div>
   <label class="lbl-toggle"><input type="checkbox" id="toggleLabels" checked> Labels</label>
   <div class="sep"></div>
   <div class="thr-ctrl">
-    <span>Width threshold:</span>
+    <span id="thrLabel">Min corridor:</span>
     <input type="number" id="thresholdInput" value="400" min="10" max="9999" step="10">
     <span>m</span>
   </div>
 </div>
 
-<div class="sidebar">
+<div class="sidebar" id="sidebar">
 
   <div class="instructions">
     <h3>📐 Draw river polygon</h3>
@@ -158,6 +271,18 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--d
       <text x="220" y="41" fill="#ff9800" font-size="6.5" font-family="monospace">②</text>
     </svg>
     <p style="font-size:0.68rem;color:var(--orange);font-family:monospace;margin-top:6px">⚠ Span FULL river — bank to bank!</p>
+  </div>
+
+
+  <!-- ✈ VTOL SELECTOR -->
+  <div class="c-head" id="hVtol" onclick="tog('bVtol','hVtol')"><span>✈ VTOL Aircraft</span><span class="caret">▾</span></div>
+  <div class="c-body" id="bVtol">
+    <div class="vtol-section">
+      <div class="vtol-grid" id="vtolGrid">
+        <!-- filled by JS -->
+      </div>
+      <div id="missionReport" style="display:none"></div>
+    </div>
   </div>
 
   <button class="btn-main" id="btnDraw">✏ Draw River Polygon</button>
@@ -188,8 +313,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--d
   <div class="c-body" id="bStats">
     <div class="stats">
       <div class="stat-row"><span class="stat-label">Transects</span><span class="stat-value sv-total" id="statTotal">—</span></div>
-      <div class="stat-row"><span class="stat-label">Sections &gt; threshold</span><span class="stat-value sv-wide" id="statWide">—</span></div>
-      <div class="stat-row"><span class="stat-label">Sections ≤ threshold</span><span class="stat-value sv-ok" id="statNormal">—</span></div>
+      <div class="stat-row"><span class="stat-label">🚫 No-Fly sections</span><span class="stat-value sv-wide" id="statWide">—</span></div>
+      <div class="stat-row"><span class="stat-label" style="color:var(--yellow)">⚠ Warning sections</span><span class="stat-value" style="color:var(--yellow)" id="statWarn">—</span></div>
+      <div class="stat-row"><span class="stat-label">✅ Flyable sections</span><span class="stat-value sv-ok" id="statNormal">—</span></div>
       <div class="stat-row"><span class="stat-label">Max width</span><span class="stat-value sv-max" id="statMax">—</span></div>
       <div class="stat-row"><span class="stat-label">Min width</span><span class="stat-value sv-ok" id="statMin">—</span></div>
       <div class="stat-row" style="margin-top:4px;padding-top:8px;border-top:1px solid var(--border)">
@@ -208,8 +334,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--d
   <div class="c-body" id="bLegend">
     <div class="legend">
       <div class="legend-title">Width Analysis</div>
-      <div class="legend-item"><div class="leg-line" style="background:#ff3d3d"></div>Width &gt; threshold</div>
-      <div class="legend-item"><div class="leg-line" style="background:#00e676"></div>Width ≤ threshold</div>
+      <div class="legend-item"><div class="leg-line" style="background:#ff3d3d"></div>🚫 No-Fly — below 70% of min corridor</div>
+      <div class="legend-item"><div class="leg-line" style="background:#ffe600"></div>⚠ Warning — 70–100% of min corridor</div>
+      <div class="legend-item"><div class="leg-line" style="background:#00e676"></div>✅ Flyable — safe corridor</div>
       <div class="legend-title">Map Overlays</div>
       <div class="legend-item"><div class="leg-box" style="background:rgba(255,50,50,0.25);border:2px solid #ff3333"></div>No-Fly Zone CTR (空港)</div>
       <div class="legend-item"><div class="leg-box" style="background:rgba(255,165,0,0.25);border:2px dashed orange"></div>Restricted Airspace</div>
@@ -254,9 +381,16 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--d
 
 </div>
 
-<div class="map-wrap">
+<div class="map-wrap" id="mapWrap">
   <div id="map"></div>
   <div class="map-hint" id="mapHint"></div>
+  <!-- Locate Me button — floats over map like Google Maps -->
+  <button class="locate-btn" id="locateBtn" onclick="locateMe()" title="Go to my current location">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="2.2"/>
+      <path d="M12 2v3.5M12 18.5V22M2 12h3.5M18.5 12H22" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+    </svg>
+  </button>
   <div class="loading-overlay" id="loadingOverlay">
     <div class="spinner"></div>
     <div class="loading-text">ANALYZING WIDTHS...</div>
@@ -298,7 +432,8 @@ const didOverlay = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/did2020/{z}
 
 // No-Fly zones — Japan airports CTR circles
 const noFlyLayer = L.layerGroup();
-[
+// Airport data also stored for zone-intersection checks
+const AIRPORTS = [
   { name:'羽田 HND',   lat:35.5494, lng:139.7798, r:9  },
   { name:'成田 NRT',   lat:35.7647, lng:140.3864, r:9  },
   { name:'伊丹 ITM',   lat:34.7854, lng:135.4381, r:9  },
@@ -319,7 +454,8 @@ const noFlyLayer = L.layerGroup();
   { name:'小松 KMQ',   lat:36.3939, lng:136.4069, r:7  },
   { name:'八尾 RJOY',  lat:34.5964, lng:135.6044, r:5, restricted:true },
   { name:'調布 RJTF',  lat:35.6697, lng:139.5278, r:5, restricted:true },
-].forEach(ap => {
+];
+AIRPORTS.forEach(ap => {
   const c = L.circle([ap.lat, ap.lng], {
     radius: ap.r * 1000,
     color: ap.restricted ? 'orange' : '#ff3333',
@@ -444,6 +580,7 @@ map.on(L.Draw.Event.CREATED, e => {
   drawnPolygon=e.layer; drawnItems.clearLayers(); drawnItems.addLayer(drawnPolygon);
   btnEdit.style.display='block';
   runWidthAnalysis(drawnPolygon.toGeoJSON().geometry);
+  checkZoneWarnings(drawnPolygon.toGeoJSON());
 });
 
 function mainAxisBearing(polygon) {
@@ -471,7 +608,8 @@ function computeTransects(polygon,threshold,interval) {
       let md=0,p1,p2;
       for(let x=0;x<pts.length;x++) for(let y=x+1;y<pts.length;y++){const d=turf.distance(pts[x],pts[y],{units:'meters'});if(d>md){md=d;p1=pts[x];p2=pts[y];}}
       if(md<5)continue;
-      results.push({coords:[p1,p2],width:Math.round(md),isWide:md>threshold,index:results.length+1});
+      const wStatus = md>=threshold?'ok': md>=threshold*0.7?'warn':'nogo';
+      results.push({coords:[p1,p2],width:Math.round(md),isWide:md<threshold,status:wStatus,index:results.length+1});
     }catch(e){}
   }
   return results;
@@ -485,17 +623,19 @@ function runWidthAnalysis(geometry) {
       map.fitBounds(drawnPolygon.getBounds(),{padding:[20,20]});
       analysisResults=computeTransects(turf.feature(geometry),threshold,100);
       analysisResults.forEach((r,idx)=>{
-        const color=r.isWide?'#ff3d3d':'#00e676',w=r.isWide?2.5:1.5,op=r.isWide?0.92:0.6;
+        const color=r.status==='nogo'?'#ff3d3d':r.status==='warn'?'#ffe600':'#00e676';
+        const w=r.status==='nogo'?2.5:r.status==='warn'?2:1.5, op=r.status==='nogo'?0.95:r.status==='warn'?0.85:0.6;
         const line=L.polyline(r.coords.map(c=>[c[1],c[0]]),{color,weight:w,opacity:op});
-        line.bindTooltip(`#${r.index} · ${r.width} m${r.isWide?' ⚠':''}`,{sticky:true});
+        const tipLabel=r.status==='nogo'?'🚫 NO-FLY':r.status==='warn'?'⚠ WARNING':'✅ OK';
+        line.bindTooltip(`#${r.index} · ${r.width}m · ${tipLabel}`,{sticky:true});
         line.on('click',()=>selectTransect(idx)); line.addTo(map); transectLayers.push(line);
         const midLat=(r.coords[0][1]+r.coords[1][1])/2,midLon=(r.coords[0][0]+r.coords[1][0])/2;
-        const cls=r.isWide?'wide':'ok';
+        const cls=r.status==='nogo'?'wide':r.status==='warn'?'warn':'ok';
         const icon=L.divIcon({className:'dist-label',html:`<div class="dist-label-inner ${cls}">${r.width}m</div>`,iconAnchor:[22,10]});
         const marker=L.marker([midLat,midLon],{icon,interactive:false,zIndexOffset:600});
         if(labelsVisible)marker.addTo(map); labelMarkers.push(marker);
       });
-      updateStats(analysisResults,threshold); renderTransectList(analysisResults);
+      updateStats(analysisResults,threshold); renderTransectList(analysisResults); renderMissionReport(analysisResults,threshold);
     }catch(err){console.error(err);alert('Error: '+err.message);}
     document.getElementById('loadingOverlay').classList.remove('show');
   },80);
@@ -510,10 +650,12 @@ function clearWidthResults() {
 }
 function clearWidthAll(){clearWidthResults();drawnItems.clearLayers();drawnPolygon=null;}
 function updateStats(results,threshold) {
+  const nogo=results.filter(r=>r.status==='nogo'), warn=results.filter(r=>r.status==='warn'), ok=results.filter(r=>r.status==='ok');
   const wide=results.filter(r=>r.isWide),ws=results.map(r=>r.width);
   document.getElementById('statTotal').textContent=results.length;
-  document.getElementById('statWide').textContent=wide.length;
-  document.getElementById('statNormal').textContent=results.length-wide.length;
+  document.getElementById('statWide').textContent=nogo.length;
+  const warnEl=document.getElementById('statWarn'); if(warnEl) warnEl.textContent=warn.length;
+  document.getElementById('statNormal').textContent=ok.length;
   document.getElementById('statMax').textContent=ws.length?Math.max(...ws)+' m':'—';
   document.getElementById('statMin').textContent=ws.length?Math.min(...ws)+' m':'—';
   if(results.length>=2){
@@ -537,13 +679,15 @@ function renderTransectList(results) {
   }
   [...results].sort((a,b)=>b.width-a.width).forEach(r=>{
     const div=document.createElement('div');
-    div.className=`t-item ${r.isWide?'wide':'ok'}`; div.dataset.idx=r.index-1;
-    div.innerHTML=`<span class="t-num">#${r.index}</span><span class="t-w ${r.isWide?'wide':'ok'}">${r.width} m</span><span class="t-badge ${r.isWide?'wide':'ok'}">${r.isWide?'▲ WIDE':'✓ OK'}</span>`;
+    const sc=r.status||'ok';
+    div.className=`t-item ${sc==='nogo'?'wide':sc}`; div.dataset.idx=r.index-1;
+    const badgeLabel=sc==='nogo'?'🚫 NO-FLY':sc==='warn'?'⚠ WARN':'✓ OK';
+    div.innerHTML=`<span class="t-num">#${r.index}</span><span class="t-w ${sc==='nogo'?'wide':sc}">${r.width} m</span><span class="t-badge ${sc==='nogo'?'wide':sc}">${badgeLabel}</span>`;
     div.addEventListener('click',()=>selectTransect(r.index-1)); list.appendChild(div);
   });
 }
 function selectTransect(idx) {
-  if(selectedIdx>=0&&transectLayers[selectedIdx]){const p=analysisResults[selectedIdx];transectLayers[selectedIdx].setStyle({color:p.isWide?'#ff3d3d':'#00e676',weight:p.isWide?2.5:1.5});}
+  if(selectedIdx>=0&&transectLayers[selectedIdx]){const p=analysisResults[selectedIdx];const rc=p.status==='nogo'?'#ff3d3d':p.status==='warn'?'#ffe600':'#00e676';transectLayers[selectedIdx].setStyle({color:rc,weight:p.status==='nogo'?2.5:p.status==='warn'?2:1.5});}
   selectedIdx=idx; const r=analysisResults[idx]; if(!r)return;
   transectLayers[idx].setStyle({color:'#fff',weight:4,opacity:1});
   map.flyTo([(r.coords[0][1]+r.coords[1][1])/2,(r.coords[0][0]+r.coords[1][0])/2],15,{duration:0.7});
@@ -558,11 +702,14 @@ document.getElementById('thresholdInput').addEventListener('change',()=>{
   if(!analysisResults.length)return;
   const threshold=parseInt(document.getElementById('thresholdInput').value)||400;
   analysisResults.forEach((r,idx)=>{
-    r.isWide=r.width>threshold; const color=r.isWide?'#ff3d3d':'#00e676';
-    if(transectLayers[idx])transectLayers[idx].setStyle({color,weight:r.isWide?2.5:1.5,opacity:r.isWide?0.92:0.6});
-    if(labelMarkers[idx]){const cls=r.isWide?'wide':'ok';labelMarkers[idx].setIcon(L.divIcon({className:'dist-label',html:`<div class="dist-label-inner ${cls}">${r.width}m</div>`,iconAnchor:[22,10]}));}
+    r.isWide=r.width<threshold;
+    r.status=r.width>=threshold?'ok':r.width>=threshold*0.7?'warn':'nogo';
+    const color=r.status==='nogo'?'#ff3d3d':r.status==='warn'?'#ffe600':'#00e676';
+    const w=r.status==='nogo'?2.5:r.status==='warn'?2:1.5, op=r.status==='nogo'?0.95:r.status==='warn'?0.85:0.6;
+    if(transectLayers[idx])transectLayers[idx].setStyle({color,weight:w,opacity:op});
+    if(labelMarkers[idx]){const cls=r.status==='nogo'?'wide':r.status==='warn'?'warn':'ok';labelMarkers[idx].setIcon(L.divIcon({className:'dist-label',html:`<div class="dist-label-inner ${cls}">${r.width}m</div>`,iconAnchor:[22,10]}));}
   });
-  updateStats(analysisResults,threshold); renderTransectList(analysisResults);
+  updateStats(analysisResults,threshold); renderTransectList(analysisResults); renderMissionReport(analysisResults,threshold);
 });
 
 // ══════════════════════════════════════════
@@ -681,8 +828,910 @@ function showToast(msg){
   setTimeout(()=>{t.style.opacity='0';setTimeout(()=>t.remove(),400);},2500);
 }
 
+
+// ══════════════════════════════════════════
+//  SIDEBAR TOGGLE
+// ══════════════════════════════════════════
+function toggleSidebar() {
+  const app = document.querySelector('.app');
+  app.classList.toggle('sb-closed');
+  setTimeout(() => map.invalidateSize(), 280);
+}
+
+
+// ══════════════════════════════════════════
+//  LOCATION SEARCH
+// ══════════════════════════════════════════
+let searchTimer = null;
+let searchPin = null;
+
+const searchInput    = document.getElementById('searchInput');
+const searchDropdown = document.getElementById('searchDropdown');
+const searchClear    = document.getElementById('searchClear');
+
+searchInput.addEventListener('input', () => {
+  const q = searchInput.value.trim();
+  searchClear.style.display = q ? 'block' : 'none';
+  clearTimeout(searchTimer);
+  if (q.length < 2) { closeSearch(); return; }
+  searchDropdown.innerHTML = '<div class="search-msg">Searching...</div>';
+  searchDropdown.classList.add('open');
+  searchTimer = setTimeout(() => doSearch(q), 420);
+});
+
+searchInput.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeSearch(); searchInput.blur(); }
+  if (e.key === 'Enter') { const first = searchDropdown.querySelector('.search-item'); if (first) first.click(); }
+});
+
+searchClear.addEventListener('click', () => {
+  searchInput.value = ''; searchClear.style.display = 'none'; closeSearch();
+  if (searchPin) { map.removeLayer(searchPin); searchPin = null; }
+});
+
+document.addEventListener('click', e => {
+  if (!document.getElementById('searchBox').contains(e.target)) closeSearch();
+});
+
+async function doSearch(q) {
+  try {
+    const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=6&accept-language=en`);
+    const data = await res.json();
+    if (!data.length) { searchDropdown.innerHTML = '<div class="search-msg">No results found</div>'; return; }
+    searchDropdown.innerHTML = '';
+    data.forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'search-item';
+      const parts = item.display_name.split(', ');
+      const name = parts.slice(0, 2).join(', ');
+      const sub  = parts.slice(2, 5).join(', ');
+      div.innerHTML = `<div class="search-item-name">📍 ${name}</div>${sub ? `<div class="search-item-sub">${sub}</div>` : ''}`;
+      div.addEventListener('click', () => selectResult(item));
+      searchDropdown.appendChild(div);
+    });
+  } catch(e) {
+    searchDropdown.innerHTML = '<div class="search-msg">Search unavailable</div>';
+  }
+}
+
+function selectResult(item) {
+  closeSearch();
+  const name = item.display_name.split(', ').slice(0, 2).join(', ');
+  searchInput.value = name;
+  searchClear.style.display = 'block';
+  const lat = parseFloat(item.lat), lng = parseFloat(item.lon);
+  if (searchPin) map.removeLayer(searchPin);
+  searchPin = L.circleMarker([lat, lng], {
+    radius:8, color:'var(--cyan)', fillColor:'#00e5ff', fillOpacity:0.9, weight:2
+  }).addTo(map).bindPopup(`<b style="font-family:monospace;font-size:0.75rem">${name}</b>`);
+  if (item.boundingbox) {
+    const bb = item.boundingbox.map(Number);
+    map.fitBounds([[bb[0],bb[2]],[bb[1],bb[3]]], { padding:[40,40], maxZoom:16 });
+  } else {
+    map.flyTo([lat, lng], 14, { duration:0.8 });
+  }
+  setTimeout(() => searchPin.openPopup(), 900);
+}
+
+function closeSearch() { searchDropdown.classList.remove('open'); }
+
+
+// ══════════════════════════════════════════
+//  VTOL FLEET & SELECTOR
+// ══════════════════════════════════════════
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// FIXED-WING COORDINATED LEVEL TURN
+// Source: Leishman, "Introduction to Aerospace Flight Vehicles", ERAU
+//         Chapter: Equations of Motion for an Airplane
+//
+// Eq 28 — Vertical equilibrium:    L·cos(φ) = W
+// Eq 29 — Centripetal equilibrium: L·sin(φ) = (W/g)·V²/R_h
+// Eq 30 — Lift required:           L = W/cos(φ)
+// Eq 31 — Load factor:             n = 1/cos(φ) = sec(φ)
+// Eq 32 — Turn radius:             R_h = V²/(g·√(n²-1))
+// Eq 33 — Rate of turn:            ω = g·√(n²-1)/V
+//
+// Note: √(n²-1) = tan(φ), so Eq 32 is equivalent to V²/(g·tan φ)
+//       The textbook's primary form uses n, so we follow that here.
+//
+// Corridor (geometric): W_corr = 2·R_h + b
+//   CG path diameter = 2R_h
+//   Outer wingtip at R_h + b/2, inner at R_h − b/2 → total span = 2R_h + b
+//
+// Banked stall: Vs_turn = Vs₁g·√n  (from lift equation: n·W = ½ρV²·S·CLmax)
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const G = 9.81; // m/s²
+
+function calcTurnaround(v) {
+  const b       = v.wingspan;
+  const V       = v.turnSpeed;
+  const phi_deg = v.bankAngle;
+  if (!b || !V || !phi_deg)           return { valid:false, reason:'Insufficient data' };
+  if (phi_deg <= 0 || phi_deg >= 90)  return { valid:false, reason:'Bank angle must be 1–89°' };
+
+  const phi  = phi_deg * Math.PI / 180;
+
+  // Eq 31: n = 1/cos(φ)
+  const n    = 1 / Math.cos(phi);
+
+  // Eq 32: R_h = V²/(g·√(n²-1))
+  const sqn  = Math.sqrt(n * n - 1);
+  const R    = (V * V) / (G * sqn);
+
+  // 180° arc length
+  const S180 = Math.PI * R;
+
+  // Corridor: 2R + b
+  const W_corr = 2 * R + b;
+
+  // Eq 33: ω = g·√(n²-1)/V  [rad/s]
+  const omega_rads = G * sqn / V;
+
+  return { valid:true, R, S180, W_corr, n, sqn, omega_rads, V, phi_deg, b };
+}
+
+const VTOLS = [
+  {
+    id:'wingtrone', cat:'small', name:'WingtraOne Gen II',
+    wingspan:1.25, maxWind:12,
+    turnSpeed:11,   // m/s ≈ 40 km/h nominal survey speed
+    bankAngle:30,   // deg — standard survey UAV
+    get minCorridor(){ return Math.round(calcTurnaround(this).W_corr||160); },
+    maxSpeed:58, range:50, payload:1.4,
+    desc:'Compact PPK mapping VTOL',
+    img:`<svg viewBox="0 0 120 60" xmlns="http://www.w3.org/2000/svg">
+      <!-- WingtraOne: distinctive penguin T-shape, swept main wing, two upright tails --> distinctive penguin T-shape, swept main wing, two upright tails -->
+      <g fill="#00e676" opacity="0.9">
+        <!-- Main swept wing left -->
+        <polygon points="60,30 8,18 10,28 60,32"/>
+        <!-- Main swept wing right -->
+        <polygon points="60,30 112,18 110,28 60,32"/>
+        <!-- Fuselage body -->
+        <ellipse cx="60" cy="30" rx="7" ry="14"/>
+        <!-- Vertical tail fins (two) -->
+        <polygon points="52,17 56,10 58,17"/>
+        <polygon points="62,17 66,10 64,17"/>
+        <!-- Rear horizontal stab -->
+        <polygon points="60,42 42,46 44,48 60,44 76,48 78,46"/>
+        <!-- Camera dome -->
+        <circle cx="60" cy="36" r="3" fill="#00e676" opacity="0.6"/>
+      </g>
+    </svg>`
+  },
+  {
+    id:'ebeex', cat:'small', name:'senseFly eBee X',
+    wingspan:1.16, maxWind:12.8,
+    turnSpeed:15,   // m/s ≈ 54 km/h
+    bankAngle:30,
+    get minCorridor(){ return Math.round(calcTurnaround(this).W_corr||140); },
+    maxSpeed:110, range:90, payload:0.5,
+    desc:'Ultra-light fixed-wing VTOL',
+    img:`<svg viewBox="0 0 120 60" xmlns="http://www.w3.org/2000/svg">
+      <!-- eBee: flying-wing with cranked leading edge, single pusher prop -->
+      <g fill="#00e676" opacity="0.9">
+        <!-- Flying wing - cranked, swept back -->
+        <polygon points="60,22 6,42 12,46 60,30 108,46 114,42"/>
+        <!-- Centre pod -->
+        <ellipse cx="60" cy="28" rx="6" ry="10"/>
+        <!-- Pusher prop at rear -->
+        <ellipse cx="60" cy="38" rx="9" ry="2" fill="#00e676" opacity="0.5"/>
+        <!-- Winglets -->
+        <polygon points="6,42 4,38 10,38 12,46"/>
+        <polygon points="114,42 116,38 110,38 108,46"/>
+      </g>
+    </svg>`
+  },
+  {
+    id:'trinity', cat:'medium', name:'Quantum Trinity F90+',
+    wingspan:2.39, maxWind:12,
+    turnSpeed:16,   // m/s ≈ 58 km/h cruise
+    bankAngle:30,
+    get minCorridor(){ return Math.round(calcTurnaround(this).W_corr||200); },
+    maxSpeed:61, range:100, payload:0.7,
+    desc:'Rugged survey VTOL',
+    img:`<svg viewBox="0 0 120 60" xmlns="http://www.w3.org/2000/svg">
+      <!-- Trinity F90+: H-tail, mid-wing, pusher prop, four VTOL rotors on booms -->
+      <g fill="#ffe600" opacity="0.9">
+        <!-- Main wing -->
+        <polygon points="60,28 10,24 10,30 60,32 110,30 110,24"/>
+        <!-- Fuselage -->
+        <ellipse cx="60" cy="30" rx="8" ry="14"/>
+        <!-- H-tail booms -->
+        <rect x="44" y="42" width="4" height="12" rx="1"/>
+        <rect x="72" y="42" width="4" height="12" rx="1"/>
+        <!-- H-tail crossbar -->
+        <rect x="36" y="52" width="16" height="3" rx="1"/>
+        <rect x="68" y="52" width="16" height="3" rx="1"/>
+        <!-- VTOL rotors (4x on wing) -->
+        <ellipse cx="22" cy="27" rx="8" ry="1.5" opacity="0.5"/>
+        <ellipse cx="98" cy="27" rx="8" ry="1.5" opacity="0.5"/>
+        <ellipse cx="35" cy="27" rx="8" ry="1.5" opacity="0.5"/>
+        <ellipse cx="85" cy="27" rx="8" ry="1.5" opacity="0.5"/>
+        <!-- Pusher prop -->
+        <ellipse cx="60" cy="42" rx="7" ry="2" opacity="0.5"/>
+      </g>
+    </svg>`
+  },
+  {
+    id:'wingcopter', cat:'medium', name:'Wingcopter 178',
+    wingspan:1.78, maxWind:15,
+    turnSpeed:17,   // m/s ≈ 61 km/h wing-borne
+    bankAngle:25,  // conservative tiltrotor bank
+    get minCorridor(){ return Math.round(calcTurnaround(this).W_corr||300); },
+    maxSpeed:86, range:75, payload:6.0,
+    desc:'Tiltrotor delivery VTOL',
+    img:`<svg viewBox="0 0 120 60" xmlns="http://www.w3.org/2000/svg">
+      <!-- Wingcopter 178: X-wing tiltrotor, 3 tilt rotors per side -->
+      <g fill="#ffe600" opacity="0.9">
+        <!-- Straight main wing -->
+        <polygon points="60,28 4,26 4,32 60,32 116,32 116,26"/>
+        <!-- Fuselage -->
+        <rect x="52" y="20" width="16" height="20" rx="4"/>
+        <!-- 3 tilt rotor nacelles per side -->
+        <ellipse cx="18" cy="29" rx="9" ry="2.5" opacity="0.65"/>
+        <ellipse cx="40" cy="29" rx="9" ry="2.5" opacity="0.65"/>
+        <ellipse cx="80" cy="29" rx="9" ry="2.5" opacity="0.65"/>
+        <ellipse cx="102" cy="29" rx="9" ry="2.5" opacity="0.65"/>
+        <!-- Tail fin -->
+        <polygon points="60,40 55,52 65,52"/>
+        <!-- Payload bay -->
+        <rect x="55" y="34" width="10" height="8" rx="2" fill="#ffe600" opacity="0.4"/>
+      </g>
+    </svg>`
+  },
+  {
+    id:'sierra', cat:'large', name:'ElevonX Sierra',
+    wingspan:3.1, maxWind:15,
+    turnSpeed:22,   // m/s ≈ 79 km/h cruise
+    bankAngle:30,
+    get minCorridor(){ return Math.round(calcTurnaround(this).W_corr||450); },
+    maxSpeed:110, range:200, payload:3.0,
+    desc:'Heavy-lift industrial VTOL',
+    img:`<svg viewBox="0 0 120 60" xmlns="http://www.w3.org/2000/svg">
+      <!-- Sierra: conventional tail, pusher, two VTOL rotors per wing -->
+      <g fill="#ff6d00" opacity="0.9">
+        <!-- Main wing (straight, wider) -->
+        <polygon points="60,27 2,22 2,30 60,31 118,30 118,22"/>
+        <!-- Fuselage (longer) -->
+        <ellipse cx="60" cy="29" rx="9" ry="16"/>
+        <!-- Conventional V-tail -->
+        <polygon points="60,44 48,55 52,56 60,46 68,56 72,55"/>
+        <!-- 4 VTOL rotors on wing -->
+        <ellipse cx="22" cy="26" rx="9" ry="2" opacity="0.55"/>
+        <ellipse cx="44" cy="26" rx="9" ry="2" opacity="0.55"/>
+        <ellipse cx="76" cy="26" rx="9" ry="2" opacity="0.55"/>
+        <ellipse cx="98" cy="26" rx="9" ry="2" opacity="0.55"/>
+        <!-- Pusher prop -->
+        <ellipse cx="60" cy="43" rx="8" ry="2" opacity="0.5"/>
+        <!-- Camera -->
+        <circle cx="60" cy="20" r="3.5" fill="#ff6d00" opacity="0.6"/>
+      </g>
+    </svg>`
+  },
+  {
+    id:'joby', cat:'large', name:'Joby S4 (eVTOL)',
+    wingspan:10.7, maxWind:15,
+    turnSpeed:89,   // m/s ≈ 320 km/h cruise
+    bankAngle:25,
+    get minCorridor(){ return Math.round(calcTurnaround(this).W_corr||800); },
+    maxSpeed:322, range:241, payload:453,
+    desc:'Passenger air taxi',
+    img:`<svg viewBox="0 0 120 60" xmlns="http://www.w3.org/2000/svg">
+      <!-- Joby S4: 6 tilting rotors (3 per side), swept canard+main wing -->
+      <g fill="#ff6d00" opacity="0.9">
+        <!-- Forward canard -->
+        <polygon points="60,22 30,19 30,23 60,24 90,23 90,19"/>
+        <!-- Main swept wing -->
+        <polygon points="60,32 4,24 6,30 60,34 114,30 116,24"/>
+        <!-- Fuselage (wider - passenger cabin) -->
+        <ellipse cx="60" cy="30" rx="7" ry="18"/>
+        <!-- 3 tilt rotor booms per side -->
+        <line x1="30" y1="21" x2="20" y2="25" stroke="#ff6d00" stroke-width="2"/>
+        <line x1="60" y1="23" x2="60" y2="28" stroke="#ff6d00" stroke-width="2"/>
+        <line x1="90" y1="21" x2="100" y2="25" stroke="#ff6d00" stroke-width="2"/>
+        <!-- 6 large rotors -->
+        <ellipse cx="16" cy="26" rx="10" ry="2.5" opacity="0.6"/>
+        <ellipse cx="40" cy="26" rx="10" ry="2.5" opacity="0.6"/>
+        <ellipse cx="60" cy="28" rx="10" ry="2.5" opacity="0.6"/>
+        <ellipse cx="80" cy="26" rx="10" ry="2.5" opacity="0.6"/>
+        <ellipse cx="104" cy="26" rx="10" ry="2.5" opacity="0.6"/>
+        <!-- Rear boom + tail rotor -->
+        <rect x="57" y="44" width="6" height="10" rx="2"/>
+        <ellipse cx="60" cy="54" rx="8" ry="2" opacity="0.5"/>
+      </g>
+    </svg>`
+  },
+  {
+    id:'custom',cat:'custom',name:'Custom Aircraft',
+    wingspan:null, safety:null, minCorridor:null,
+    maxSpeed:null, range:null, payload:null,
+    desc:'Define your own aircraft',
+    img:null
+  }
+];
+
+let selectedVtol = VTOLS[0]; // default WingtraOne
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Build the Fixed-Wing Turnaround Corridor HTML block for a card
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function buildTurnSection(v) {
+  const t = calcTurnaround(v);
+  if (!t.valid) return `<div class="turn-section">
+    <div class="turn-section-hdr"><span class="turn-section-title">Turnaround Corridor</span><span class="turn-badge">Fixed-Wing</span></div>
+    <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted)">${t.reason}</div></div>`;
+
+  const f1 = x => x.toFixed(1);
+  const f0 = x => Math.round(x);
+  const tip = `Eq 31: n = 1/cos(${t.phi_deg}°) = ${f1(t.n)} g\nEq 32: R = V²/(g·√(n²-1)) = ${t.V}²/(9.81·${f1(t.sqn)}) = ${f1(t.R)} m\nEq 33: ω = g·√(n²-1)/V = ${f1(t.omega_rads*180/Math.PI)} °/s\nCorridor: 2R+b = 2×${f1(t.R)}+${t.b} = ${f0(t.W_corr)} m`;
+
+  return `<div class="turn-section">
+    <div class="turn-section-hdr">
+      <span class="turn-section-title">Turnaround Corridor</span>
+      <span class="turn-badge">ERAU Eq 31–33</span>
+    </div>
+    <div class="turn-row"><span class="turn-k">Turn speed / bank</span><span class="turn-v">${t.V} m/s · ${t.phi_deg}°</span></div>
+    <div class="turn-row"><span class="turn-k">n = 1/cos φ  <span style="opacity:0.5">(Eq 31)</span></span><span class="turn-v">${f1(t.n)} g</span></div>
+    <div class="turn-row"><span class="turn-k">R = V²/g√(n²−1)  <span style="opacity:0.5">(Eq 32)</span></span><span class="turn-v">${f1(t.R)} m</span></div>
+    <div class="turn-row"><span class="turn-k">180° arc  π·R</span><span class="turn-v">${f0(t.S180)} m</span></div>
+    <div class="turn-row"><span class="turn-k">ω = g√(n²−1)/V  <span style="opacity:0.5">(Eq 33)</span></span><span class="turn-v">${f1(t.omega_rads*180/Math.PI)} °/s</span></div>
+    <div class="turn-row" style="border-top:1px solid rgba(0,229,255,0.12);padding-top:3px;margin-top:2px">
+      <span class="turn-k" style="color:var(--cyan)">Corridor  2R + b</span>
+      <span class="turn-v highlight">${f0(t.W_corr)} m</span>
+    </div>
+    <div class="turn-breakdown" title="${tip}">
+      <span>n=${f1(t.n)}g  R=${f1(t.R)}m  ω=${f1(t.omega_rads*180/Math.PI)}°/s</span><br>
+      <span>W = 2×${f1(t.R)} + ${t.b} = ${f0(t.W_corr)} m</span>
+    </div>
+  </div>`;
+}
+
+
+function buildVtolGrid() {
+  const grid = document.getElementById('vtolGrid');
+  grid.innerHTML = '';
+  VTOLS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'vtol-card' + (v.id === selectedVtol.id ? ' selected' : '') + (v.id==='custom'?' custom-card':'');
+    card.dataset.id = v.id;
+
+    const catColor = v.cat==='small'?'#00e676':v.cat==='medium'?'#ffe600':v.cat==='large'?'#ff6d00':'#b47cff';
+
+    // Draw wingspan SVG bar (relative scale, max wingspan = 11m)
+    const maxW = 11;
+    const barPct = v.id==='custom' ? 0 : Math.min((v.wingspan/maxW)*100, 100);
+
+    if (v.id === 'custom') {
+      card.innerHTML = `
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px">
+          <div>
+            <div class="vtol-cat custom">⚙ CUSTOM</div>
+            <div class="vtol-name" style="margin-top:2px">${v.name}</div>
+          </div>
+          <span class="turn-badge">Fixed-Wing</span>
+          <div class="vtol-select-dot" style="position:static"></div>
+        </div>
+        <div class="custom-inputs" id="customInputs">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 10px">
+            <div class="custom-row"><span>Wingspan b</span><input type="number" id="cWingspan"   value="2.0" min="0.1" max="50"  step="0.1"> m</div>
+            <div class="custom-row"><span>Turn speed V</span><input type="number" id="cTurnSpeed" value="15"  min="5"   max="300" step="1">   m/s</div>
+            <div class="custom-row"><span>Bank angle φ</span><input type="number" id="cBankAngle" value="30"  min="5"   max="75"  step="1">   °</div>
+
+          </div>
+          <div id="customTurnResult" style="margin-top:5px"></div>
+        </div>`;
+    } else {
+      card.innerHTML = `
+        <div class="vtol-select-dot"></div>
+        <div class="vtol-cat ${v.cat}">${v.cat.toUpperCase()}</div>
+        <div class="vtol-name">${v.name}</div>
+        <div class="vtol-img">${v.img||''}</div>
+        <div class="vtol-specs">
+          <div class="vtol-spec"><span class="vtol-spec-k">Wingspan</span><span class="vtol-spec-v">${v.wingspan} m</span></div>
+          <div class="vtol-spec"><span class="vtol-spec-k">Max wind</span><span class="vtol-spec-v">${v.maxWind} m/s</span></div>
+          <div class="vtol-spec"><span class="vtol-spec-k">Range</span><span class="vtol-spec-v">${v.range} km</span></div>
+        </div>
+        ${buildTurnSection(v)}`;
+    }
+    card.addEventListener('click', () => selectVtol(v.id));
+    grid.appendChild(card);
+  });
+
+  // Custom inputs live update
+  ['cWingspan','cTurnSpeed','cBankAngle'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', () => {
+      if (selectedVtol.id === 'custom') {
+        applyVtolThreshold();
+        renderCustomTurnResult();
+      }
+    });
+  });
+  if (selectedVtol.id === 'custom') renderCustomTurnResult();
+}
+
+function selectVtol(id) {
+  selectedVtol = VTOLS.find(v=>v.id===id) || VTOLS[0];
+  document.querySelectorAll('.vtol-card').forEach(c => {
+    c.classList.toggle('selected', c.dataset.id === id);
+  });
+  applyVtolThreshold();
+  if (id === 'custom') renderCustomTurnResult();
+}
+
+function getCustomObj() {
+  return {
+    wingspan:  parseFloat(document.getElementById('cWingspan')?.value   || 2),
+    turnSpeed: parseFloat(document.getElementById('cTurnSpeed')?.value  || 15),
+    bankAngle: parseFloat(document.getElementById('cBankAngle')?.value  || 30),
+
+  };
+}
+
+function getCustomCorridor() {
+  const obj = getCustomObj();
+  const t = calcTurnaround(obj);
+  return t.valid ? Math.round(t.W_corr) : Math.round(obj.wingspan + 2*100);
+}
+
+function renderCustomTurnResult() {
+  const el = document.getElementById('customTurnResult');
+  if (!el) return;
+  el.innerHTML = buildTurnSection(getCustomObj());
+}
+
+function applyVtolThreshold() {
+  let corridor;
+  if (selectedVtol.id === 'custom') {
+    corridor = getCustomCorridor();
+  } else {
+    corridor = selectedVtol.minCorridor;
+  }
+  document.getElementById('thresholdInput').value = corridor;
+  // Re-run analysis if polygon already exists
+  if (analysisResults.length) {
+    const threshold = corridor;
+    analysisResults.forEach((r,idx) => {
+      r.isWide = r.width < threshold;
+      r.status = r.width>=threshold?'ok':r.width>=threshold*0.7?'warn':'nogo';
+      const color = r.status==='nogo'?'#ff3d3d':r.status==='warn'?'#ffe600':'#00e676';
+      const w=r.status==='nogo'?2.5:r.status==='warn'?2:1.5, op=r.status==='nogo'?0.95:r.status==='warn'?0.85:0.6;
+      if(transectLayers[idx]) transectLayers[idx].setStyle({color, weight:w, opacity:op});
+      if(labelMarkers[idx]){const cls=r.status==='nogo'?'wide':r.status==='warn'?'warn':'ok';labelMarkers[idx].setIcon(L.divIcon({className:'dist-label',html:`<div class="dist-label-inner ${cls}">${r.width}m</div>`,iconAnchor:[22,10]}));}
+    });
+    updateStats(analysisResults, threshold);
+    renderTransectList(analysisResults);
+    renderMissionReport(analysisResults, threshold);
+  } else {
+    document.getElementById('thresholdInput').dispatchEvent(new Event('change'));
+  }
+}
+
+function renderMissionReport(results, threshold) {
+  const wrap = document.getElementById('missionReport');
+  if (!results.length) { wrap.style.display='none'; return; }
+
+  const noGo   = results.filter(r => r.status==='nogo');
+  const warned  = results.filter(r => r.status==='warn');
+  const flyable = results.filter(r => r.status==='ok');
+  const pct     = Math.round((flyable.length/results.length)*100);
+  const warnPct = Math.round((warned.length/results.length)*100);
+
+  // Longest consecutive fully-flyable stretch
+  let maxStreak=0, streak=0;
+  results.forEach(r => { if(r.status==='ok'){streak++;maxStreak=Math.max(maxStreak,streak);}else{streak=0;} });
+
+  const vtolName = selectedVtol.id==='custom' ? 'Custom Aircraft' : selectedVtol.name;
+  const status = pct===100?'go':pct===0?'nogo':'partial';
+  const statusIcon = pct===100?'✅ MISSION GO':pct===0?'🚫 NO-GO':'⚠️ PARTIAL';
+  const statusColor = pct===100?'var(--green)':pct===0?'var(--red)':'var(--yellow)';
+
+  // Find narrowest section for alert detail
+  const minWidth = Math.min(...results.map(r=>r.width));
+  const vtolImg = selectedVtol.img || '';
+
+  wrap.style.display='block';
+  wrap.innerHTML = `
+    <div class="mission-report">
+      <div class="mission-header ${status}">
+        <span>${statusIcon}</span>
+        <span style="font-size:0.72rem;opacity:0.7">${vtolName}</span>
+      </div>
+      <div class="mission-body">
+        <div class="mission-row">
+          <span class="mission-k">Flyable coverage</span>
+          <span class="mission-v" style="color:${statusColor}">${pct}%</span>
+        </div>
+        <div class="mission-bar-wrap"><div class="mission-bar ${status}" style="width:${pct}%"></div></div>
+        <div class="mission-row" style="margin-top:6px">
+          <span class="mission-k">✅ Flyable sections</span>
+          <span class="mission-v" style="color:var(--green)">${flyable.length}</span>
+        </div>
+        <div class="mission-row">
+          <span class="mission-k">❌ No-go sections</span>
+          <span class="mission-v" style="color:var(--red)">${noGo.length}</span>
+        </div>
+        <div class="mission-row">
+          <span class="mission-k">Max consec. flyable</span>
+          <span class="mission-v" style="color:var(--cyan)">${maxStreak} segments</span>
+        </div>
+        <div class="mission-row">
+          <span class="mission-k">Min corridor req.</span>
+          <span class="mission-v" style="color:var(--orange)">${threshold}m</span>
+        </div>
+      </div>
+    </div>`;
+
+  // ── SweetAlert mission verdict ──────────────────────────────────────────────
+  const swalBase = {
+    background: '#0b1322',
+    color: '#c0d0e8',
+    confirmButtonColor: '#00e5ff',
+    cancelButtonColor: '#ff3d3d',
+    customClass: {
+      popup: 'swal-vtol-popup',
+      title: 'swal-vtol-title',
+      htmlContainer: 'swal-vtol-html',
+      confirmButton: 'swal-vtol-confirm',
+      cancelButton: 'swal-vtol-cancel',
+    }
+  };
+
+  if (pct === 0) {
+    // Complete no-go
+    Swal.fire({
+      ...swalBase,
+      icon: 'error',
+      iconColor: '#ff3d3d',
+      title: '🚫 MISSION ABORT',
+      html: `
+        <div style="text-align:center">
+          <div style="width:90px;margin:0 auto 10px">${vtolImg}</div>
+          <p style="font-family:monospace;font-size:0.85rem;color:#ff3d3d;font-weight:bold;margin-bottom:8px">
+            ${vtolName} CANNOT fly this route
+          </p>
+          <p style="font-family:monospace;font-size:0.75rem;color:#3d5470;margin-bottom:6px">
+            Narrowest section: <span style="color:#ff3d3d">${minWidth}m</span>
+          </p>
+          <p style="font-family:monospace;font-size:0.75rem;color:#3d5470">
+            Required corridor: <span style="color:#ff6d00">${threshold}m</span>
+          </p>
+          <p style="font-family:monospace;font-size:0.72rem;color:#3d5470;margin-top:10px">
+            The entire river is too narrow.<br>Select a smaller aircraft or survey a different section.
+          </p>
+        </div>`,
+      confirmButtonText: '🔄 Change Aircraft',
+      showCancelButton: true,
+      cancelButtonText: '✕ Dismiss',
+    }).then(r => {
+      if (r.isConfirmed) {
+        document.getElementById('hVtol').click();
+        document.getElementById('bVtol').scrollIntoView({behavior:'smooth'});
+      }
+    });
+
+  } else if (pct < 100) {
+    // Partial — some sections blocked
+    const urgency = pct < 50 ? 'warning' : 'info';
+    const urgencyColor = pct < 50 ? '#ffe600' : '#00e5ff';
+    Swal.fire({
+      ...swalBase,
+      icon: urgency,
+      iconColor: urgencyColor,
+      title: pct < 50 ? '⚠️ HIGH RISK MISSION' : '⚠️ PARTIAL CLEARANCE',
+      html: `
+        <div style="text-align:center">
+          <div style="width:90px;margin:0 auto 10px">${vtolImg}</div>
+          <p style="font-family:monospace;font-size:0.82rem;color:${urgencyColor};font-weight:bold;margin-bottom:10px">
+            ${vtolName}
+          </p>
+          <div style="display:flex;justify-content:center;gap:14px;margin-bottom:10px">
+            <div style="text-align:center">
+              <div style="font-family:monospace;font-size:1.3rem;font-weight:bold;color:#00e676">${flyable.length}</div>
+              <div style="font-family:monospace;font-size:0.6rem;color:#3d5470;text-transform:uppercase">✅ Flyable</div>
+            </div>
+            <div style="text-align:center">
+              <div style="font-family:monospace;font-size:1.3rem;font-weight:bold;color:#ffe600">${warned.length}</div>
+              <div style="font-family:monospace;font-size:0.6rem;color:#3d5470;text-transform:uppercase">⚠ Warning</div>
+            </div>
+            <div style="text-align:center">
+              <div style="font-family:monospace;font-size:1.3rem;font-weight:bold;color:#ff3d3d">${noGo.length}</div>
+              <div style="font-family:monospace;font-size:0.6rem;color:#3d5470;text-transform:uppercase">🚫 No-Fly</div>
+            </div>
+            <div style="text-align:center">
+              <div style="font-family:monospace;font-size:1.3rem;font-weight:bold;color:${urgencyColor}">${pct}%</div>
+              <div style="font-family:monospace;font-size:0.6rem;color:#3d5470;text-transform:uppercase">Coverage</div>
+            </div>
+          </div>
+          <div style="background:rgba(255,255,255,0.04);border-radius:4px;height:8px;overflow:hidden;margin-bottom:8px">
+            <div style="background:${urgencyColor};height:100%;width:${pct}%;border-radius:4px;transition:width 0.5s"></div>
+          </div>
+          <p style="font-family:monospace;font-size:0.7rem;color:#3d5470">
+            Narrowest section: <span style="color:#ff3d3d">${minWidth}m</span> · Required: <span style="color:#ff6d00">${threshold}m</span>
+          </p>
+          <p style="font-family:monospace;font-size:0.7rem;color:#3d5470;margin-top:6px">
+            🔴 Red transects on map = no-fly zones for this aircraft.
+          </p>
+        </div>`,
+      confirmButtonText: '✅ Proceed with Caution',
+      showCancelButton: true,
+      cancelButtonText: '🔄 Change Aircraft',
+    }).then(r => {
+      if (!r.isConfirmed) {
+        document.getElementById('hVtol').click();
+        document.getElementById('bVtol').scrollIntoView({behavior:'smooth'});
+      }
+    });
+
+  } else {
+    // Full go — brief success toast
+    Swal.fire({
+      ...swalBase,
+      toast: true,
+      position: 'top-end',
+      icon: 'success',
+      iconColor: '#00e676',
+      title: `✅ ${vtolName} — MISSION GO`,
+      html: `<span style="font-family:monospace;font-size:0.72rem;color:#3d5470">All ${results.length} sections flyable · ${pct}% coverage</span>`,
+      showConfirmButton: false,
+      timer: 3500,
+      timerProgressBar: true,
+    });
+  }
+}
+
+
+// ══════════════════════════════════════════
+//  ZONE WARNINGS (No-Fly & DID)
+// ══════════════════════════════════════════
+
+// Convert lat/lng/radius to turf circle for intersection testing
+function airportCircle(ap) {
+  return turf.circle([ap.lng, ap.lat], ap.r, { units:'kilometers', steps:64 });
+}
+
+// Sample DID tile at a coordinate — returns true if the tile pixel is non-transparent (= DID area)
+function checkDIDTile(lat, lng) {
+  return new Promise(resolve => {
+    const zoom = 13;
+    const x = Math.floor((lng + 180) / 360 * Math.pow(2, zoom));
+    const latRad = lat * Math.PI / 180;
+    const y = Math.floor((1 - Math.log(Math.tan(latRad) + 1/Math.cos(latRad)) / Math.PI) / 2 * Math.pow(2, zoom));
+    // Compute pixel position within tile
+    const tileSize = 256;
+    const worldSize = tileSize * Math.pow(2, zoom);
+    const px = Math.floor(((lng + 180) / 360 * worldSize) % tileSize);
+    const pyWorld = (1 - Math.log(Math.tan(latRad) + 1/Math.cos(latRad)) / Math.PI) / 2 * worldSize;
+    const py = Math.floor(pyWorld % tileSize);
+
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = tileSize; canvas.height = tileSize;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        const pixel = ctx.getImageData(px, py, 1, 1).data;
+        // DID tiles are purple/semi-transparent — if alpha > 20, it's DID
+        resolve(pixel[3] > 20);
+      } catch(e) { resolve(false); }
+    };
+    img.onerror = () => resolve(false);
+    img.src = `https://cyberjapandata.gsi.go.jp/xyz/did2020/${zoom}/${x}/${y}.png`;
+  });
+}
+
+async function checkZoneWarnings(geojson) {
+  const poly = turf.feature(geojson.geometry || geojson);
+  const centroid = turf.centroid(poly);
+  const [cLng, cLat] = centroid.geometry.coordinates;
+
+  // ── 1. Check No-Fly Zone intersection ──────────────────────────────────────
+  const hitAirports = [];
+  for (const ap of AIRPORTS) {
+    try {
+      const circle = airportCircle(ap);
+      if (turf.booleanIntersects(poly, circle)) {
+        hitAirports.push(ap);
+      }
+    } catch(e) {}
+  }
+
+  // ── 2. Check DID — sample centroid + 4 corners of bbox ───────────────────
+  const bbox = turf.bbox(poly);
+  const samplePoints = [
+    [cLat, cLng],
+    [bbox[1], bbox[0]], [bbox[1], bbox[2]],
+    [bbox[3], bbox[0]], [bbox[3], bbox[2]],
+  ];
+  const didResults = await Promise.all(samplePoints.map(([lat,lng]) => checkDIDTile(lat, lng)));
+  const inDID = didResults.some(r => r);
+
+  // ── 3. Fire alerts ──────────────────────────────────────────────────────────
+  const swalBase = {
+    background:'#0b1322', color:'#c0d0e8',
+    customClass:{ popup:'swal-vtol-popup', title:'swal-vtol-title', confirmButton:'swal-vtol-confirm', cancelButton:'swal-vtol-cancel' }
+  };
+
+  if (hitAirports.length > 0 && inDID) {
+    // Both violations — most severe
+    const apList = hitAirports.map(a => `<li>✈ <b>${a.name}</b> — ${a.r}km CTR</li>`).join('');
+    await Swal.fire({
+      ...swalBase,
+      icon: 'error', iconColor: '#ff3d3d',
+      title: '🚨 DUAL AIRSPACE VIOLATION',
+      html: `
+        <div style="font-family:monospace;font-size:0.78rem;text-align:left">
+          <div style="background:rgba(255,61,61,0.1);border:1px solid rgba(255,61,61,0.4);border-radius:4px;padding:10px 12px;margin-bottom:10px">
+            <div style="color:#ff3d3d;font-weight:bold;margin-bottom:6px">🚫 NO-FLY ZONE OVERLAP</div>
+            <ul style="color:#c0d0e8;padding-left:14px;margin:0;line-height:1.8">${apList}</ul>
+          </div>
+          <div style="background:rgba(180,124,255,0.1);border:1px solid rgba(180,124,255,0.4);border-radius:4px;padding:10px 12px">
+            <div style="color:#b47cff;font-weight:bold;margin-bottom:4px">🏙️ DID POPULATED AREA DETECTED</div>
+            <div style="color:#3d5470;font-size:0.7rem">This polygon overlaps a 人口集中地区 (Densely Inhabited District).<br>Urban airspace requires prior approval from MLIT / JAAB.</div>
+          </div>
+        </div>`,
+      confirmButtonText: '⚠️ I Understand the Risks',
+      confirmButtonColor: '#ff6d00',
+      showCancelButton: true,
+      cancelButtonText: '✕ Cancel Mission',
+    });
+
+  } else if (hitAirports.length > 0) {
+    // No-fly only
+    const apList = hitAirports.map(a =>
+      `<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 10px;background:rgba(255,61,61,0.07);border-radius:3px;margin-bottom:4px">
+        <span style="color:#c0d0e8">✈ ${a.name}</span>
+        <span style="color:#ff3d3d;font-weight:bold">${a.r}km CTR</span>
+      </div>`
+    ).join('');
+    await Swal.fire({
+      ...swalBase,
+      icon: 'error', iconColor: '#ff3d3d',
+      title: '🚫 NO-FLY ZONE VIOLATION',
+      html: `
+        <div style="font-family:monospace;font-size:0.78rem">
+          <p style="color:#3d5470;margin-bottom:10px;font-size:0.7rem">Your polygon overlaps the following controlled airspace zones:</p>
+          ${apList}
+          <div style="margin-top:12px;padding:8px 10px;background:rgba(255,109,0,0.08);border-radius:3px;border-left:3px solid #ff6d00">
+            <span style="color:#ff6d00;font-size:0.7rem">⚠️ Flying in CTR airspace without ATC clearance is illegal under Japan's Civil Aeronautics Act.</span>
+          </div>
+        </div>`,
+      confirmButtonText: '⚠️ Acknowledged — Proceed',
+      confirmButtonColor: '#ff6d00',
+      showCancelButton: true,
+      cancelButtonText: '✕ Cancel Mission',
+    });
+
+  } else if (inDID) {
+    // DID only
+    await Swal.fire({
+      ...swalBase,
+      icon: 'warning', iconColor: '#b47cff',
+      title: '🏙️ DID AREA DETECTED',
+      html: `
+        <div style="font-family:monospace;font-size:0.78rem;text-align:left">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+            <div style="width:18px;height:18px;border-radius:3px;background:rgba(180,124,255,0.5);border:1px solid #b47cff;flex-shrink:0"></div>
+            <span style="color:#b47cff;font-weight:bold">人口集中地区 (Densely Inhabited District)</span>
+          </div>
+          <p style="color:#c0d0e8;margin-bottom:8px">This polygon lies within or near a DID area.</p>
+          <ul style="color:#3d5470;padding-left:16px;line-height:2;font-size:0.7rem">
+            <li>Urban flights require permission from <b style="color:#c0d0e8">MLIT</b></li>
+            <li>File a <b style="color:#c0d0e8">飛行計画</b> via <a href="https://www.ossportal.dips.mlit.go.jp/portal/top/" target="_blank" style="color:#00e5ff">DIPS 2.0</a></li>
+            <li>Maintain visual line of sight at all times</li>
+            <li>Comply with local municipal regulations</li>
+          </ul>
+        </div>`,
+      confirmButtonText: '✅ Understood',
+      confirmButtonColor: '#b47cff',
+      showCancelButton: true,
+      cancelButtonText: '🔗 Open DIPS 2.0',
+    }).then(r => {
+      if (!r.isConfirmed) window.open('https://www.ossportal.dips.mlit.go.jp/portal/top/', '_blank');
+    });
+  }
+  // If no violations — no alert (mission report success toast handles it)
+}
+
 renderRecentList();
 loadFromHash();
+buildVtolGrid();
+applyVtolThreshold();
+
+// Auto-request location on load — browser will prompt the user
+window.addEventListener('load', () => {
+  setTimeout(() => locateMe(true), 800); // silent=true so denial won't show alert
+});
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// LOCATE ME — fly to device GPS position, like Google Maps
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+let locateMarker = null;
+let locateCircle = null;
+
+function locateMe(silent = false) {
+  const btn = document.getElementById('locateBtn');
+  if (!navigator.geolocation) {
+    if (!silent) Swal.fire({ icon:'error', title:'Not supported', text:'Geolocation is not available in this browser.', background:'#0b1322', color:'#e0e8f0' });
+    return;
+  }
+
+  // If already located, just recenter
+  if (locateMarker && btn.classList.contains('located')) {
+    const latlng = locateMarker.getLatLng();
+    map.flyTo(latlng, 15, { duration: 1.2 });
+    return;
+  }
+
+  btn.classList.add('locating');
+  btn.title = 'Getting location…';
+
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      const lat = pos.coords.latitude;
+      const lng = pos.coords.longitude;
+      const acc = pos.coords.accuracy;
+
+      if (locateMarker) { map.removeLayer(locateMarker); locateMarker = null; }
+      if (locateCircle) { map.removeLayer(locateCircle); locateCircle = null; }
+
+      locateCircle = L.circle([lat, lng], {
+        radius: acc,
+        color: '#00e5ff',
+        fillColor: '#00e5ff',
+        fillOpacity: 0.08,
+        weight: 1.5,
+        dashArray: '4 4'
+      }).addTo(map);
+
+      const locIcon = L.divIcon({
+        className: '',
+        html: `<div style="
+          width:18px;height:18px;
+          border-radius:50%;
+          background:radial-gradient(circle at 40% 35%, #66ffff, #00e5ff);
+          border:2.5px solid #fff;
+          box-shadow:0 0 0 3px rgba(0,229,255,0.35), 0 2px 8px rgba(0,0,0,0.5);
+          animation:pulse-loc 1.8s infinite;
+        "></div>`,
+        iconSize: [18, 18],
+        iconAnchor: [9, 9]
+      });
+
+      locateMarker = L.marker([lat, lng], { icon: locIcon })
+        .addTo(map)
+        .bindPopup(`
+          <div style="font-family:'Share Tech Mono',monospace;font-size:0.72rem;line-height:1.7;color:#e0e8f0">
+            <div style="color:#00e5ff;font-size:0.8rem;margin-bottom:4px">📍 Current Location</div>
+            <div>Lat: ${lat.toFixed(6)}°</div>
+            <div>Lng: ${lng.toFixed(6)}°</div>
+            <div style="color:rgba(128,160,192,0.7);margin-top:3px">Accuracy: ±${Math.round(acc)} m</div>
+          </div>
+        `, { maxWidth: 200 });
+
+      const zoom = acc < 50 ? 16 : acc < 200 ? 15 : acc < 1000 ? 13 : 11;
+      map.flyTo([lat, lng], zoom, { duration: 1.5 });
+
+      btn.classList.remove('locating');
+      btn.classList.add('located');
+      btn.title = `Current location (±${Math.round(acc)} m) — click to recenter`;
+    },
+    (err) => {
+      btn.classList.remove('locating');
+      if (!silent) {
+        const msgs = {
+          1: 'Location access denied. Please allow location in your browser.',
+          2: 'Position unavailable. Check your device GPS.',
+          3: 'Location request timed out. Try again.'
+        };
+        Swal.fire({ icon:'warning', title:'Location error', text: msgs[err.code] || err.message, background:'#0b1322', color:'#e0e8f0' });
+      }
+    },
+    { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 }
+  );
+}
 </script>
 </body>
 </html>
