@@ -19,7 +19,87 @@
   --yellow:#ffe600;--purple:#b47cff;
   --text:#c0d0e8;--muted:#3d5470;
   --mono:'Share Tech Mono',monospace;--display:'Rajdhani',sans-serif;
+  --shadow:rgba(0,0,0,0.5);
+  --transition:background 0.25s,color 0.25s,border-color 0.25s;
 }
+:root.light{
+  --bg:#f5f2ef;--panel:#ffffff;--panel2:#ede8e3;--border:#d4c8be;
+  --cyan:#9b4b1c;--orange:#7a3a14;--red:#cc2200;--green:#2d6a2d;
+  --yellow:#8a6200;--purple:#5c3d8f;
+  --text:#424242;--muted:#7a6a5e;
+  --shadow:rgba(0,0,0,0.12);
+}
+.theme-btn{display:flex;align-items:center;justify-content:center;width:32px;height:32px;background:var(--bg);border:1.5px solid var(--border);color:var(--muted);cursor:pointer;border-radius:4px;transition:all 0.15s;padding:0;flex-shrink:0}
+.theme-btn:hover{color:var(--cyan);border-color:var(--cyan);background:rgba(0,229,255,0.07)}
+:root.light .theme-btn{color:var(--muted)}
+:root.light .theme-btn:hover{color:var(--cyan);border-color:var(--cyan);background:rgba(155,75,28,0.08)}
+/* Light mode overrides — company colors #9b4b1c / #424242 */
+:root.light h1{color:#424242!important}
+:root.light .tag{background:rgba(155,75,28,0.1);border-color:rgba(155,75,28,0.35);color:#9b4b1c}
+:root.light .c-head{background:rgba(0,0,0,0.02);color:#424242}
+:root.light .c-head:hover{background:rgba(155,75,28,0.06);color:#9b4b1c}
+:root.light .vtol-card{box-shadow:0 1px 4px var(--shadow)}
+:root.light .vtol-card:hover{border-color:rgba(155,75,28,0.4);background:rgba(155,75,28,0.04)}
+:root.light .vtol-card.selected{border-color:#9b4b1c;background:rgba(155,75,28,0.08);box-shadow:0 0 12px rgba(155,75,28,0.15)}
+:root.light .vtol-select-dot{border-color:#9b4b1c}
+:root.light .vtol-card.selected .vtol-select-dot{background:#9b4b1c;border-color:#9b4b1c;box-shadow:0 0 6px #9b4b1c}
+:root.light .instructions{background:rgba(155,75,28,0.04);border-color:rgba(155,75,28,0.15)}
+:root.light .turn-section{background:rgba(155,75,28,0.04);border-color:rgba(155,75,28,0.2)}
+:root.light .turn-section-title{color:#9b4b1c}
+:root.light .turn-badge{background:rgba(155,75,28,0.12);color:#9b4b1c;border:1px solid rgba(155,75,28,0.3)}
+:root.light .turn-k{color:#424242}
+:root.light .turn-v{color:#424242}
+:root.light .turn-v.highlight{color:#9b4b1c!important}
+:root.light .turn-breakdown{color:#7a6a5e;border-color:rgba(155,75,28,0.2)}
+:root.light .vtol-spec-k{color:#7a6a5e}
+:root.light .vtol-spec-v{color:#424242}
+:root.light .vtol-name{color:#424242}
+:root.light .vtol-cat{color:#9b4b1c}
+:root.light .stat-label{color:#7a6a5e}
+:root.light .stat-value{color:#424242}
+:root.light .mission-k{color:#7a6a5e}
+:root.light .mission-v{color:#424242}
+:root.light .search-box input{background:var(--panel2);color:#424242}
+:root.light .search-box input::placeholder{color:#7a6a5e}
+:root.light .search-item{color:#424242;border-color:var(--border)}
+:root.light .search-item:hover{background:rgba(155,75,28,0.06)}
+:root.light .loading-overlay{background:rgba(245,242,239,0.92)}
+:root.light .loading-text{color:#9b4b1c}
+:root.light .loading-sub{color:#7a6a5e}
+:root.light .coords-bar{background:rgba(245,242,239,0.88);color:#7a6a5e}
+:root.light .map-hint{background:rgba(255,255,255,0.97);border-color:#9b4b1c;color:#424242}
+:root.light .recent-item{border-left-color:#9b4b1c;background:var(--panel2)}
+:root.light .recent-name{color:#424242}
+:root.light .recent-meta{color:#7a6a5e}
+:root.light .legend-title{color:#7a6a5e}
+:root.light .legend-item{color:#424242}
+:root.light .lang-dropdown{box-shadow:0 8px 24px rgba(0,0,0,0.15);border-color:#9b4b1c}
+:root.light .lang-option{color:#424242}
+:root.light .lang-option:hover{background:rgba(155,75,28,0.08);color:#9b4b1c}
+:root.light .lang-option.selected{color:#9b4b1c}
+:root.light .locate-btn{box-shadow:0 2px 8px var(--shadow);color:#7a6a5e}
+:root.light .locate-btn:hover{color:#9b4b1c;border-color:#9b4b1c}
+:root.light .locate-btn.located{color:#9b4b1c;border-color:#9b4b1c;background:rgba(155,75,28,0.1)}
+:root.light .btn-main{background:#9b4b1c;color:#ffffff}
+:root.light .btn-main:hover{background:#7a3a14}
+:root.light .btn-sec{color:#424242;border-color:var(--border)}
+:root.light .btn-sec:hover{border-color:#9b4b1c;color:#9b4b1c}
+:root.light .custom-row span{color:#424242}
+:root.light .custom-row input{background:var(--panel2);border-color:var(--border);color:#424242}
+:root.light .lbl-toggle{color:#424242}
+:root.light .thr-ctrl{color:#424242}
+:root.light .thr-ctrl input{background:var(--panel2);color:#9b4b1c;border-color:var(--border)}
+:root.light .step p{color:#424242}
+:root.light .step-num{background:#9b4b1c;color:#fff}
+:root.light .sidebar-toggle{color:#424242;border-color:var(--border)}
+:root.light .sidebar-toggle:hover{border-color:#9b4b1c;color:#9b4b1c}
+:root.light .lbl-toggle input{accent-color:#9b4b1c}
+:root.light input[type="number"]:focus{border-color:#9b4b1c!important}
+:root.light .leaflet-control-layers{background:#fff!important;color:#424242!important;border-color:var(--border)!important}
+:root.light .leaflet-control-layers label{color:#424242!important}
+:root.light .swal2-popup{background:#ffffff!important;color:#424242!important}
+:root.light .swal2-title{color:#424242!important}
+:root.light .swal2-html-container{color:#424242!important}
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--display);overflow:hidden}
 .app{display:grid;grid-template-columns:320px 1fr;grid-template-rows:52px 1fr;height:100vh;transition:grid-template-columns 0.25s ease}
 .topbar{grid-column:1/-1;display:flex;align-items:center;gap:10px;background:var(--panel);border-bottom:1px solid var(--border);padding:0 14px;z-index:100}
@@ -32,6 +112,15 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--d
 .lbl-toggle{display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:0.68rem;color:var(--text);cursor:pointer}
 .lbl-toggle input{accent-color:var(--cyan)}
 .sep{width:1px;height:22px;background:var(--border)}
+.lang-wrap{position:relative;flex-shrink:0}
+.lang-btn{display:flex;align-items:center;justify-content:center;width:32px;height:32px;background:var(--bg);border:1.5px solid var(--border);color:var(--muted);cursor:pointer;border-radius:4px;transition:all 0.15s;padding:0}
+.lang-btn:hover,.lang-btn.active{color:var(--cyan);border-color:var(--cyan);background:rgba(0,229,255,0.07)}
+.lang-dropdown{position:fixed;background:var(--panel);border:1px solid var(--cyan);border-radius:4px;box-shadow:0 8px 24px rgba(0,0,0,0.7);z-index:99999;display:none;min-width:140px;overflow:hidden}
+.lang-dropdown.open{display:block}
+.lang-option{display:flex;align-items:center;gap:8px;padding:9px 14px;font-family:var(--mono);font-size:0.72rem;color:var(--text);cursor:pointer;transition:background 0.1s;white-space:nowrap}
+.lang-option:hover{background:rgba(0,229,255,0.08);color:var(--cyan)}
+.lang-option.selected{color:var(--cyan)}
+.lang-flag{font-size:1rem}
 .locate-btn{position:absolute;bottom:38px;right:10px;z-index:1000;display:flex;align-items:center;justify-content:center;width:36px;height:36px;background:var(--panel);border:1.5px solid var(--border);border-radius:4px;color:var(--muted);cursor:pointer;transition:color 0.15s,border-color 0.15s,background 0.15s,box-shadow 0.15s;box-shadow:0 2px 10px rgba(0,0,0,0.5)}
 .locate-btn:hover{color:var(--cyan);border-color:var(--cyan);background:rgba(0,229,255,0.06);box-shadow:0 0 14px rgba(0,229,255,0.2)}
 .locate-btn.locating{color:var(--cyan);border-color:var(--cyan);animation:pulse-loc 1s infinite}
@@ -236,23 +325,38 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--d
   </div>
 
   <div class="sep"></div>
-  <label class="lbl-toggle"><input type="checkbox" id="toggleLabels" checked> Labels</label>
+  <label class="lbl-toggle"><input type="checkbox" id="toggleLabels" checked> <span data-i18n="labels">Labels</span></label>
   <div class="sep"></div>
   <div class="thr-ctrl">
-    <span id="thrLabel">Min corridor:</span>
+    <span id="thrLabel" data-i18n="minCorridor">Min corridor:</span>
     <input type="number" id="thresholdInput" value="400" min="10" max="9999" step="10">
     <span>m</span>
+  </div>
+  <div class="sep"></div>
+  <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle light / dark mode">
+    <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+  <div class="sep"></div>
+  <div class="lang-wrap" id="langWrap">
+    <button class="lang-btn" id="langBtn" onclick="toggleLangMenu()" title="Change language">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.8"/>
+        <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" stroke="currentColor" stroke-width="1.8"/>
+      </svg>
+    </button>
   </div>
 </div>
 
 <div class="sidebar" id="sidebar">
 
   <div class="instructions">
-    <h3>📐 Draw river polygon</h3>
-    <div class="step"><div class="step-num">1</div><p>Click <strong>Draw Polygon</strong> below</p></div>
-    <div class="step"><div class="step-num">2</div><p>Trace along <strong>Bank 1</strong> (one side)</p></div>
-    <div class="step"><div class="step-num">3</div><p>Cross to <strong>Bank 2</strong> and trace back</p></div>
-    <div class="step"><div class="step-num">4</div><p><strong>Double-click</strong> to finish</p></div>
+    <h3>📐 <span data-i18n="drawTitle">Draw river polygon</span></h3>
+    <div class="step"><div class="step-num">1</div><p data-i18n="step1">Click <strong>Draw Polygon</strong> below</p></div>
+    <div class="step"><div class="step-num">2</div><p data-i18n="step2">Trace along <strong>Bank 1</strong> (one side)</p></div>
+    <div class="step"><div class="step-num">3</div><p data-i18n="step3">Cross to <strong>Bank 2</strong> and trace back</p></div>
+    <div class="step"><div class="step-num">4</div><p data-i18n="step4"><strong>Double-click</strong> to finish</p></div>
     <svg viewBox="0 0 240 76" width="100%" style="margin-top:7px;display:block">
       <defs>
         <marker id="aG" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto"><polygon points="0,0 5,2.5 0,5" fill="#00e676"/></marker>
@@ -270,12 +374,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--d
       <line x1="212" y1="19" x2="212" y2="56" stroke="#ff9800" stroke-width="1.4" marker-end="url(#aO)"/>
       <text x="220" y="41" fill="#ff9800" font-size="6.5" font-family="monospace">②</text>
     </svg>
-    <p style="font-size:0.68rem;color:var(--orange);font-family:monospace;margin-top:6px">⚠ Span FULL river — bank to bank!</p>
+    <p style="font-size:0.68rem;color:var(--orange);font-family:monospace;margin-top:6px"><span data-i18n="spanFull">⚠ Span FULL river — bank to bank!</span></p>
   </div>
 
 
   <!-- ✈ VTOL SELECTOR -->
-  <div class="c-head" id="hVtol" onclick="tog('bVtol','hVtol')"><span>✈ VTOL Aircraft</span><span class="caret">▾</span></div>
+  <div class="c-head" id="hVtol" onclick="tog('bVtol','hVtol')"><span>✈ <span data-i18n="vtolAircraft">VTOL Aircraft</span></span><span class="caret">▾</span></div>
   <div class="c-body" id="bVtol">
     <div class="vtol-section">
       <div class="vtol-grid" id="vtolGrid">
@@ -285,59 +389,59 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--d
     </div>
   </div>
 
-  <button class="btn-main" id="btnDraw">✏ Draw River Polygon</button>
+  <button class="btn-main" id="btnDraw">✏ <span data-i18n="btnDraw">Draw River Polygon</span></button>
   <div style="display:flex;gap:6px;margin:5px 12px 0">
-    <button class="btn-sec" id="btnEdit" style="flex:1;border-color:var(--cyan);color:var(--cyan);display:none">✎ Edit Points</button>
-    <button class="btn-sec" id="btnUndo" style="flex:1">↩ Undo</button>
+    <button class="btn-sec" id="btnEdit" style="flex:1;border-color:var(--cyan);color:var(--cyan);display:none">✎ <span data-i18n="btnEdit">Edit Points</span></button>
+    <button class="btn-sec" id="btnUndo" style="flex:1">↩ <span data-i18n="btnUndo">Undo</span></button>
   </div>
-  <button class="btn-sec" id="btnClearWidth" style="margin:5px 12px 0;width:calc(100% - 24px)">✕ Clear All</button>
+  <button class="btn-sec" id="btnClearWidth" style="margin:5px 12px 0;width:calc(100% - 24px)">✕ <span data-i18n="btnClear">Clear All</span></button>
 
   <div id="liveDistBox" style="display:none;margin:10px 12px 0;padding:10px 12px;background:rgba(0,229,255,0.05);border:1px solid rgba(0,229,255,0.25);border-radius:3px">
-    <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:2px;color:var(--cyan);text-transform:uppercase;margin-bottom:6px">📍 Live Perimeter</div>
+    <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:2px;color:var(--cyan);text-transform:uppercase;margin-bottom:6px"><span data-i18n="livePerimeter">📍 Live Perimeter</span></div>
     <div style="display:flex;justify-content:space-between;margin-top:4px">
-      <span style="font-family:var(--mono);font-size:0.65rem;color:var(--muted)">Points</span>
+      <span style="font-family:var(--mono);font-size:0.65rem;color:var(--muted)" data-i18n="points">Points</span>
       <span style="font-family:var(--mono);font-size:0.9rem;font-weight:bold;color:var(--cyan)" id="livePoints">0</span>
     </div>
     <div style="display:flex;justify-content:space-between;margin-top:4px">
-      <span style="font-family:var(--mono);font-size:0.65rem;color:var(--muted)">Total distance</span>
+      <span style="font-family:var(--mono);font-size:0.65rem;color:var(--muted)" data-i18n="totalDistance">Total distance</span>
       <span style="font-family:var(--mono);font-size:1.1rem;font-weight:bold;color:var(--orange)" id="liveDist">0 m</span>
     </div>
     <div style="display:flex;justify-content:space-between;margin-top:4px">
-      <span style="font-family:var(--mono);font-size:0.65rem;color:var(--muted)">Last segment</span>
+      <span style="font-family:var(--mono);font-size:0.65rem;color:var(--muted)" data-i18n="lastSegment">Last segment</span>
       <span style="font-family:var(--mono);font-size:0.85rem;font-weight:bold;color:var(--green)" id="liveLastSeg">—</span>
     </div>
   </div>
 
   <!-- ANALYSIS RESULTS -->
-  <div class="c-head" id="hStats" onclick="tog('bStats','hStats')"><span>📊 Analysis Results</span><span class="caret">▾</span></div>
+  <div class="c-head" id="hStats" onclick="tog('bStats','hStats')"><span>📊 <span data-i18n="analysisResults">Analysis Results</span></span><span class="caret">▾</span></div>
   <div class="c-body" id="bStats">
     <div class="stats">
-      <div class="stat-row"><span class="stat-label">Transects</span><span class="stat-value sv-total" id="statTotal">—</span></div>
-      <div class="stat-row"><span class="stat-label">🚫 No-Fly sections</span><span class="stat-value sv-wide" id="statWide">—</span></div>
-      <div class="stat-row"><span class="stat-label" style="color:var(--yellow)">⚠ Warning sections</span><span class="stat-value" style="color:var(--yellow)" id="statWarn">—</span></div>
-      <div class="stat-row"><span class="stat-label">✅ Flyable sections</span><span class="stat-value sv-ok" id="statNormal">—</span></div>
-      <div class="stat-row"><span class="stat-label">Max width</span><span class="stat-value sv-max" id="statMax">—</span></div>
-      <div class="stat-row"><span class="stat-label">Min width</span><span class="stat-value sv-ok" id="statMin">—</span></div>
+      <div class="stat-row"><span class="stat-label" data-i18n="statTransects">Transects</span><span class="stat-value sv-total" id="statTotal">—</span></div>
+      <div class="stat-row"><span class="stat-label" data-i18n="statNoFly">🚫 No-Fly sections</span><span class="stat-value sv-wide" id="statWide">—</span></div>
+      <div class="stat-row"><span class="stat-label" style="color:var(--yellow)" data-i18n="statWarn">⚠ Warning sections</span><span class="stat-value" style="color:var(--yellow)" id="statWarn">—</span></div>
+      <div class="stat-row"><span class="stat-label" data-i18n="statFlyable">✅ Flyable sections</span><span class="stat-value sv-ok" id="statNormal">—</span></div>
+      <div class="stat-row"><span class="stat-label" data-i18n="maxWidth">Max width</span><span class="stat-value sv-max" id="statMax">—</span></div>
+      <div class="stat-row"><span class="stat-label" data-i18n="minWidth">Min width</span><span class="stat-value sv-ok" id="statMin">—</span></div>
       <div class="stat-row" style="margin-top:4px;padding-top:8px;border-top:1px solid var(--border)">
-        <span class="stat-label">River length</span>
+        <span class="stat-label" data-i18n="riverLength">River length</span>
         <span class="stat-value" style="color:var(--purple)" id="statLength">—</span>
       </div>
       <div class="stat-row">
-        <span class="stat-label">Avg width</span>
+        <span class="stat-label" data-i18n="avgWidth">Avg width</span>
         <span class="stat-value" style="color:var(--cyan)" id="statAvg">—</span>
       </div>
     </div>
   </div>
 
   <!-- LEGEND -->
-  <div class="c-head" id="hLegend" onclick="tog('bLegend','hLegend')"><span>🗺 Legend</span><span class="caret">▾</span></div>
+  <div class="c-head" id="hLegend" onclick="tog('bLegend','hLegend')"><span>🗺 <span data-i18n="legend">Legend</span></span><span class="caret">▾</span></div>
   <div class="c-body" id="bLegend">
     <div class="legend">
-      <div class="legend-title">Width Analysis</div>
+      <div class="legend-title" data-i18n="widthAnalysis">Width Analysis</div>
       <div class="legend-item"><div class="leg-line" style="background:#ff3d3d"></div>🚫 No-Fly — below 70% of min corridor</div>
       <div class="legend-item"><div class="leg-line" style="background:#ffe600"></div>⚠ Warning — 70–100% of min corridor</div>
       <div class="legend-item"><div class="leg-line" style="background:#00e676"></div>✅ Flyable — safe corridor</div>
-      <div class="legend-title">Map Overlays</div>
+      <div class="legend-title" data-i18n="mapOverlays">Map Overlays</div>
       <div class="legend-item"><div class="leg-box" style="background:rgba(255,50,50,0.25);border:2px solid #ff3333"></div>No-Fly Zone CTR (空港)</div>
       <div class="legend-item"><div class="leg-box" style="background:rgba(255,165,0,0.25);border:2px dashed orange"></div>Restricted Airspace</div>
       <div class="legend-item"><div class="leg-box" style="background:rgba(180,124,255,0.4);border:1px solid var(--purple)"></div>DID 人口集中地区 2020</div>
@@ -349,32 +453,32 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--d
   </div>
 
   <!-- TRANSECTS -->
-  <div class="c-head" id="hTransects" style="display:none" onclick="tog('bTransects','hTransects')"><span>📏 Transects (sorted by width)</span><span class="caret">▾</span></div>
+  <div class="c-head" id="hTransects" style="display:none" onclick="tog('bTransects','hTransects')"><span>📏 <span data-i18n="transects">Transects (sorted by width)</span></span><span class="caret">▾</span></div>
   <div class="c-body" id="bTransects">
     <div class="t-list" id="transectList"></div>
   </div>
 
   <!-- SAVE & SHARE -->
-  <div class="c-head" id="hSave" onclick="tog('bSave','hSave')"><span>💾 Save &amp; Share</span><span class="caret">▾</span></div>
+  <div class="c-head" id="hSave" onclick="tog('bSave','hSave')"><span>💾 <span data-i18n="saveShare">Save &amp; Share</span></span><span class="caret">▾</span></div>
   <div class="c-body" id="bSave">
     <div style="margin:10px 12px 0;display:flex;gap:6px">
-      <input id="polyName" type="text" placeholder="Name this polygon..." style="flex:1;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:6px 8px;outline:none;border-radius:2px;min-width:0">
-      <button onclick="savePolygon()" style="background:var(--green);color:#000;border:none;font-family:var(--mono);font-size:0.7rem;font-weight:bold;padding:6px 10px;cursor:pointer;border-radius:2px">💾 Save</button>
+      <input id="polyName" type="text" placeholder="Name this polygon..." data-i18n-placeholder="namePoly" style="flex:1;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:6px 8px;outline:none;border-radius:2px;min-width:0">
+      <button onclick="savePolygon()" style="background:var(--green);color:#000;border:none;font-family:var(--mono);font-size:0.7rem;font-weight:bold;padding:6px 10px;cursor:pointer;border-radius:2px"><span data-i18n="btnSave">💾 Save</span></button>
     </div>
     <div style="margin:6px 12px 10px;display:flex;gap:6px">
-      <button onclick="exportGeoJSON()" style="flex:1;background:transparent;color:var(--cyan);border:1px solid var(--border);font-family:var(--mono);font-size:0.65rem;padding:6px;cursor:pointer;border-radius:2px">⬇ GeoJSON</button>
-      <button onclick="sharePolygon()" style="flex:1;background:transparent;color:var(--purple);border:1px solid var(--border);font-family:var(--mono);font-size:0.65rem;padding:6px;cursor:pointer;border-radius:2px">🔗 Share Link</button>
+      <button onclick="exportGeoJSON()" style="flex:1;background:transparent;color:var(--cyan);border:1px solid var(--border);font-family:var(--mono);font-size:0.65rem;padding:6px;cursor:pointer;border-radius:2px"><span data-i18n="btnGeoJSON">⬇ GeoJSON</span></button>
+      <button onclick="sharePolygon()" style="flex:1;background:transparent;color:var(--purple);border:1px solid var(--border);font-family:var(--mono);font-size:0.65rem;padding:6px;cursor:pointer;border-radius:2px"><span data-i18n="btnShare">🔗 Share Link</span></button>
     </div>
   </div>
 
   <!-- RECENT POLYGONS -->
-  <div class="c-head" id="hRecent" onclick="tog('bRecent','hRecent')"><span>🕒 Recent Polygons</span><span class="caret">▾</span></div>
+  <div class="c-head" id="hRecent" onclick="tog('bRecent','hRecent')"><span>🕒 <span data-i18n="recentPolygons">Recent Polygons</span></span><span class="caret">▾</span></div>
   <div class="c-body" id="bRecent">
     <div style="margin:8px 12px 0;display:flex;gap:6px">
       <label style="flex:1;background:transparent;color:var(--orange);border:1px solid var(--border);font-family:var(--mono);font-size:0.65rem;padding:6px;cursor:pointer;border-radius:2px;text-align:center">
-        📁 Open File<input type="file" id="importFile" accept=".json,.geojson" style="display:none" onchange="importSavedFile(event)">
+        <span data-i18n="btnOpen">📁 Open File</span><input type="file" id="importFile" accept=".json,.geojson" style="display:none" onchange="importSavedFile(event)">
       </label>
-      <button onclick="exportAllSaved()" style="flex:1;background:transparent;color:var(--muted);border:1px solid var(--border);font-family:var(--mono);font-size:0.65rem;padding:6px;cursor:pointer;border-radius:2px">⬇ Export All</button>
+      <button onclick="exportAllSaved()" style="flex:1;background:transparent;color:var(--muted);border:1px solid var(--border);font-family:var(--mono);font-size:0.65rem;padding:6px;cursor:pointer;border-radius:2px"><span data-i18n="btnExport">⬇ Export All</span></button>
     </div>
     <div id="recentList" style="padding:6px 8px 12px"></div>
   </div>
@@ -393,10 +497,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--d
   </button>
   <div class="loading-overlay" id="loadingOverlay">
     <div class="spinner"></div>
-    <div class="loading-text">ANALYZING WIDTHS...</div>
-    <div class="loading-sub">Computing perpendicular transects</div>
+    <div class="loading-text" data-i18n="loadingText">ANALYZING WIDTHS...</div>
+    <div class="loading-sub" data-i18n="loadingSub">Computing perpendicular transects</div>
   </div>
-  <div class="coords-bar">Lat: <span id="coordLat">—</span>&nbsp;&nbsp;Lon: <span id="coordLon">—</span></div>
+  <div class="coords-bar"><span data-i18n="latLabel">Lat:</span> <span id="coordLat">—</span>&nbsp;&nbsp;<span data-i18n="lonLabel">Lon:</span> <span id="coordLon">—</span></div>
 </div>
 
 </div>
@@ -522,15 +626,15 @@ function startEdit() {
   isEditing=true; clearWidthResults();
   editHandler = new L.EditToolbar.Edit(map, { featureGroup:drawnItems });
   editHandler.enable();
-  btnEdit.textContent='✔ Save Edits'; btnEdit.classList.add('edit-active'); btnDraw.disabled=true;
-  hint.textContent='✎ Drag any point to move · Click ✔ Save Edits when done'; hint.className='map-hint show';
+  btnEdit.textContent = T().saveEdits; btnEdit.classList.add('edit-active'); btnDraw.disabled=true;
+  hint.textContent = T().hintEdit; hint.className='map-hint show';
 }
 function stopEdit(save) {
   if (!editHandler) return;
   if (save) { editHandler.save(); drawnPolygon=drawnItems.getLayers()[0]; if(drawnPolygon)runWidthAnalysis(drawnPolygon.toGeoJSON().geometry); }
   else editHandler.revertLayers();
   editHandler.disable(); editHandler=null; isEditing=false;
-  btnEdit.textContent='✎ Edit Points'; btnEdit.classList.remove('edit-active'); btnDraw.disabled=false;
+  btnEdit.textContent = T().editPoints; btnEdit.classList.remove('edit-active'); btnDraw.disabled=false;
   hint.className='map-hint';
 }
 document.getElementById('btnClearWidth').addEventListener('click', () => {
@@ -539,10 +643,10 @@ document.getElementById('btnClearWidth').addEventListener('click', () => {
 });
 function setDrawingMode(on) {
   isDrawing=on;
-  btnDraw.textContent=on?'⏹ Cancel Drawing':'✏ Draw River Polygon';
+  btnDraw.innerHTML = on ? T().cancelDrawing : ('✏ <span data-i18n="btnDraw">'+T().drawPolygon+'</span>');
   btnDraw.classList.toggle('active',on);
   btnEdit.style.display='none';
-  if(on){hint.textContent='✏ Trace Bank 1 → Bank 2 → Double-click to finish · ↩ Undo or Z';hint.className='map-hint show';}
+  if(on){hint.textContent=T().hintDraw;hint.className='map-hint show';}
   else hint.className='map-hint';
 }
 
@@ -720,12 +824,12 @@ function getSaved(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]
 function setSaved(arr){localStorage.setItem(STORAGE_KEY,JSON.stringify(arr));}
 
 function savePolygon(){
-  if(!drawnPolygon)return alert('Draw a polygon first!');
+  if(!drawnPolygon)return alert(T().noPolygon);
   const name=document.getElementById('polyName').value.trim()||('River '+new Date().toLocaleDateString());
   const entry={id:Date.now(),name,date:new Date().toISOString(),geojson:drawnPolygon.toGeoJSON(),
     stats:{total:document.getElementById('statTotal').textContent,maxW:document.getElementById('statMax').textContent,len:document.getElementById('statLength').textContent}};
   const saved=getSaved(); saved.unshift(entry); setSaved(saved.slice(0,20));
-  document.getElementById('polyName').value=''; renderRecentList(); showToast('✅ Polygon saved!');
+  document.getElementById('polyName').value=''; renderRecentList(); showToast(T().toastSaved);
 }
 function loadPolygon(id){
   const entry=getSaved().find(e=>e.id===id); if(!entry)return;
@@ -741,7 +845,7 @@ function loadPolygon(id){
 function deletePolygon(id){setSaved(getSaved().filter(e=>e.id!==id));renderRecentList();}
 function renderRecentList(){
   const list=document.getElementById('recentList'),saved=getSaved();
-  if(!saved.length){list.innerHTML='<div class="recent-empty">No saved polygons yet</div>';return;}
+  if(!saved.length){list.innerHTML='<div class="recent-empty">'+(T().noSavedYet||'No saved polygons yet')+'</div>';return;}
   list.innerHTML=saved.map(e=>{
     const d=new Date(e.date),ds=d.toLocaleDateString()+' '+d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
     return `<div class="recent-item" onclick="loadPolygon(${e.id})">
@@ -754,13 +858,13 @@ function renderRecentList(){
   }).join('');
 }
 function exportGeoJSON(){
-  if(!drawnPolygon)return alert('Draw a polygon first!');
+  if(!drawnPolygon)return alert(T().noPolygon);
   const name=(document.getElementById('polyName').value.trim()||'river_polygon').replace(/\s+/g,'_');
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([JSON.stringify(drawnPolygon.toGeoJSON(),null,2)],{type:'application/json'}));
   a.download=name+'.geojson'; a.click();
 }
-function sharePolygon(){if(!drawnPolygon)return alert('Draw a polygon first!');generateShareModal(drawnPolygon.toGeoJSON());}
+function sharePolygon(){if(!drawnPolygon)return alert(T().noPolygon);generateShareModal(drawnPolygon.toGeoJSON());}
 function shareById(id){const e=getSaved().find(e=>e.id===id);if(e)generateShareModal(e.geojson);}
 function generateShareModal(geojson){
   const encoded=btoa(unescape(encodeURIComponent(JSON.stringify(geojson))));
@@ -781,11 +885,11 @@ function generateShareModal(geojson){
 }
 function copyShareUrl(){document.getElementById('shareUrl').select();document.execCommand('copy');document.getElementById('copyConfirm').style.display='block';}
 function exportAllSaved(){
-  const saved=getSaved(); if(!saved.length)return alert('No saved polygons.');
+  const saved=getSaved(); if(!saved.length)return alert(T().noSaved);
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([JSON.stringify({version:1,exported:new Date().toISOString(),polygons:saved},null,2)],{type:'application/json'}));
   a.download='river_polygons_'+new Date().toISOString().slice(0,10)+'.json'; a.click();
-  showToast('⬇ Exported '+saved.length+' polygon(s)');
+  showToast('⬇ '+(currentLang==='ja'?'エクスポート完了: ':'Exported ')+saved.length+(currentLang==='ja'?' 件':'polygon(s)'));
 }
 function importSavedFile(event){
   const file=event.target.files[0]; if(!file)return;
@@ -797,11 +901,11 @@ function importSavedFile(event){
       else if(data.type==='Feature'||data.type==='Polygon')
         polygons=[{id:Date.now(),name:file.name.replace(/\.(json|geojson)$/,''),date:new Date().toISOString(),
           geojson:data.type==='Feature'?data:{type:'Feature',geometry:data,properties:{}},stats:{}}];
-      if(!polygons.length)return alert('No valid polygon data found.');
+      if(!polygons.length)return alert(T().noValidData);
       const existing=getSaved(),existingIds=new Set(existing.map(e=>e.id));
       const newOnes=polygons.filter(p=>!existingIds.has(p.id));
       setSaved([...newOnes,...existing].slice(0,20)); renderRecentList();
-      showToast('📁 Imported '+newOnes.length+' polygon(s)!');
+      showToast('📁 '+(currentLang==='ja'?'インポート完了: ':'Imported ')+newOnes.length+(currentLang==='ja'?' 件':'polygon(s)!'));
     }catch(err){alert('Could not read file: '+err.message);}
   };
   reader.readAsText(file); event.target.value='';
@@ -1378,31 +1482,29 @@ function renderMissionReport(results, threshold) {
   };
 
   if (pct === 0) {
-    // Complete no-go
     Swal.fire({
       ...swalBase,
-      icon: 'error',
-      iconColor: '#ff3d3d',
-      title: '🚫 MISSION ABORT',
+      icon: 'error', iconColor: '#ff3d3d',
+      title: T().swalAbortTitle,
       html: `
         <div style="text-align:center">
           <div style="width:90px;margin:0 auto 10px">${vtolImg}</div>
           <p style="font-family:monospace;font-size:0.85rem;color:#ff3d3d;font-weight:bold;margin-bottom:8px">
-            ${vtolName} CANNOT fly this route
+            ${vtolName} ${T().swalCannotFly}
           </p>
           <p style="font-family:monospace;font-size:0.75rem;color:#3d5470;margin-bottom:6px">
-            Narrowest section: <span style="color:#ff3d3d">${minWidth}m</span>
+            ${T().swalNarrowest} <span style="color:#ff3d3d">${minWidth}m</span>
           </p>
           <p style="font-family:monospace;font-size:0.75rem;color:#3d5470">
-            Required corridor: <span style="color:#ff6d00">${threshold}m</span>
+            ${T().swalRequired} <span style="color:#ff6d00">${threshold}m</span>
           </p>
           <p style="font-family:monospace;font-size:0.72rem;color:#3d5470;margin-top:10px">
-            The entire river is too narrow.<br>Select a smaller aircraft or survey a different section.
+            ${T().swalAbortMsg}
           </p>
         </div>`,
-      confirmButtonText: '🔄 Change Aircraft',
+      confirmButtonText: T().swalChangeAircraft,
       showCancelButton: true,
-      cancelButtonText: '✕ Dismiss',
+      cancelButtonText: T().swalDismiss,
     }).then(r => {
       if (r.isConfirmed) {
         document.getElementById('hVtol').click();
@@ -1411,51 +1513,45 @@ function renderMissionReport(results, threshold) {
     });
 
   } else if (pct < 100) {
-    // Partial — some sections blocked
     const urgency = pct < 50 ? 'warning' : 'info';
     const urgencyColor = pct < 50 ? '#ffe600' : '#00e5ff';
     Swal.fire({
       ...swalBase,
-      icon: urgency,
-      iconColor: urgencyColor,
-      title: pct < 50 ? '⚠️ HIGH RISK MISSION' : '⚠️ PARTIAL CLEARANCE',
+      icon: urgency, iconColor: urgencyColor,
+      title: pct < 50 ? T().swalHighRisk : T().swalPartial,
       html: `
         <div style="text-align:center">
           <div style="width:90px;margin:0 auto 10px">${vtolImg}</div>
-          <p style="font-family:monospace;font-size:0.82rem;color:${urgencyColor};font-weight:bold;margin-bottom:10px">
-            ${vtolName}
-          </p>
+          <p style="font-family:monospace;font-size:0.82rem;color:${urgencyColor};font-weight:bold;margin-bottom:10px">${vtolName}</p>
           <div style="display:flex;justify-content:center;gap:14px;margin-bottom:10px">
             <div style="text-align:center">
               <div style="font-family:monospace;font-size:1.3rem;font-weight:bold;color:#00e676">${flyable.length}</div>
-              <div style="font-family:monospace;font-size:0.6rem;color:#3d5470;text-transform:uppercase">✅ Flyable</div>
+              <div style="font-family:monospace;font-size:0.6rem;color:#3d5470;text-transform:uppercase">✅ ${T().swalFlyable}</div>
             </div>
             <div style="text-align:center">
               <div style="font-family:monospace;font-size:1.3rem;font-weight:bold;color:#ffe600">${warned.length}</div>
-              <div style="font-family:monospace;font-size:0.6rem;color:#3d5470;text-transform:uppercase">⚠ Warning</div>
+              <div style="font-family:monospace;font-size:0.6rem;color:#3d5470;text-transform:uppercase">⚠ ${T().swalWarning}</div>
             </div>
             <div style="text-align:center">
               <div style="font-family:monospace;font-size:1.3rem;font-weight:bold;color:#ff3d3d">${noGo.length}</div>
-              <div style="font-family:monospace;font-size:0.6rem;color:#3d5470;text-transform:uppercase">🚫 No-Fly</div>
+              <div style="font-family:monospace;font-size:0.6rem;color:#3d5470;text-transform:uppercase">🚫 ${T().swalNoFly}</div>
             </div>
             <div style="text-align:center">
               <div style="font-family:monospace;font-size:1.3rem;font-weight:bold;color:${urgencyColor}">${pct}%</div>
-              <div style="font-family:monospace;font-size:0.6rem;color:#3d5470;text-transform:uppercase">Coverage</div>
+              <div style="font-family:monospace;font-size:0.6rem;color:#3d5470;text-transform:uppercase">${T().swalCoverage}</div>
             </div>
           </div>
           <div style="background:rgba(255,255,255,0.04);border-radius:4px;height:8px;overflow:hidden;margin-bottom:8px">
             <div style="background:${urgencyColor};height:100%;width:${pct}%;border-radius:4px;transition:width 0.5s"></div>
           </div>
           <p style="font-family:monospace;font-size:0.7rem;color:#3d5470">
-            Narrowest section: <span style="color:#ff3d3d">${minWidth}m</span> · Required: <span style="color:#ff6d00">${threshold}m</span>
+            ${T().swalNarrowest} <span style="color:#ff3d3d">${minWidth}m</span> · ${T().swalRequired} <span style="color:#ff6d00">${threshold}m</span>
           </p>
-          <p style="font-family:monospace;font-size:0.7rem;color:#3d5470;margin-top:6px">
-            🔴 Red transects on map = no-fly zones for this aircraft.
-          </p>
+          <p style="font-family:monospace;font-size:0.7rem;color:#3d5470;margin-top:6px">${T().swalRedHint}</p>
         </div>`,
-      confirmButtonText: '✅ Proceed with Caution',
+      confirmButtonText: T().swalProceed,
       showCancelButton: true,
-      cancelButtonText: '🔄 Change Aircraft',
+      cancelButtonText: T().swalChangeAircraft,
     }).then(r => {
       if (!r.isConfirmed) {
         document.getElementById('hVtol').click();
@@ -1464,18 +1560,14 @@ function renderMissionReport(results, threshold) {
     });
 
   } else {
-    // Full go — brief success toast
     Swal.fire({
       ...swalBase,
-      toast: true,
-      position: 'top-end',
-      icon: 'success',
-      iconColor: '#00e676',
-      title: `✅ ${vtolName} — MISSION GO`,
-      html: `<span style="font-family:monospace;font-size:0.72rem;color:#3d5470">All ${results.length} sections flyable · ${pct}% coverage</span>`,
+      toast: true, position: 'top-end',
+      icon: 'success', iconColor: '#00e676',
+      title: `✅ ${vtolName} — ${T().swalMissionGo}`,
+      html: `<span style="font-family:monospace;font-size:0.72rem;color:#3d5470">${T().swalAllFlyable.replace('{n}', results.length).replace('{pct}', pct)}</span>`,
       showConfirmButton: false,
-      timer: 3500,
-      timerProgressBar: true,
+      timer: 3500, timerProgressBar: true,
     });
   }
 }
@@ -1555,31 +1647,29 @@ async function checkZoneWarnings(geojson) {
   };
 
   if (hitAirports.length > 0 && inDID) {
-    // Both violations — most severe
     const apList = hitAirports.map(a => `<li>✈ <b>${a.name}</b> — ${a.r}km CTR</li>`).join('');
     await Swal.fire({
       ...swalBase,
       icon: 'error', iconColor: '#ff3d3d',
-      title: '🚨 DUAL AIRSPACE VIOLATION',
+      title: T().swalDualViolation,
       html: `
         <div style="font-family:monospace;font-size:0.78rem;text-align:left">
           <div style="background:rgba(255,61,61,0.1);border:1px solid rgba(255,61,61,0.4);border-radius:4px;padding:10px 12px;margin-bottom:10px">
-            <div style="color:#ff3d3d;font-weight:bold;margin-bottom:6px">🚫 NO-FLY ZONE OVERLAP</div>
+            <div style="color:#ff3d3d;font-weight:bold;margin-bottom:6px">🚫 ${T().swalNoFlyOverlap}</div>
             <ul style="color:#c0d0e8;padding-left:14px;margin:0;line-height:1.8">${apList}</ul>
           </div>
           <div style="background:rgba(180,124,255,0.1);border:1px solid rgba(180,124,255,0.4);border-radius:4px;padding:10px 12px">
-            <div style="color:#b47cff;font-weight:bold;margin-bottom:4px">🏙️ DID POPULATED AREA DETECTED</div>
-            <div style="color:#3d5470;font-size:0.7rem">This polygon overlaps a 人口集中地区 (Densely Inhabited District).<br>Urban airspace requires prior approval from MLIT / JAAB.</div>
+            <div style="color:#b47cff;font-weight:bold;margin-bottom:4px">🏙️ ${T().swalDIDDetected}</div>
+            <div style="color:#3d5470;font-size:0.7rem">${T().swalDIDOverlap}</div>
           </div>
         </div>`,
-      confirmButtonText: '⚠️ I Understand the Risks',
+      confirmButtonText: T().swalUnderstandRisks,
       confirmButtonColor: '#ff6d00',
       showCancelButton: true,
-      cancelButtonText: '✕ Cancel Mission',
+      cancelButtonText: T().swalCancelMission,
     });
 
   } else if (hitAirports.length > 0) {
-    // No-fly only
     const apList = hitAirports.map(a =>
       `<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 10px;background:rgba(255,61,61,0.07);border-radius:3px;margin-bottom:4px">
         <span style="color:#c0d0e8">✈ ${a.name}</span>
@@ -1589,45 +1679,44 @@ async function checkZoneWarnings(geojson) {
     await Swal.fire({
       ...swalBase,
       icon: 'error', iconColor: '#ff3d3d',
-      title: '🚫 NO-FLY ZONE VIOLATION',
+      title: T().swalNoFlyTitle,
       html: `
         <div style="font-family:monospace;font-size:0.78rem">
-          <p style="color:#3d5470;margin-bottom:10px;font-size:0.7rem">Your polygon overlaps the following controlled airspace zones:</p>
+          <p style="color:#3d5470;margin-bottom:10px;font-size:0.7rem">${T().swalNoFlyDesc}</p>
           ${apList}
           <div style="margin-top:12px;padding:8px 10px;background:rgba(255,109,0,0.08);border-radius:3px;border-left:3px solid #ff6d00">
-            <span style="color:#ff6d00;font-size:0.7rem">⚠️ Flying in CTR airspace without ATC clearance is illegal under Japan's Civil Aeronautics Act.</span>
+            <span style="color:#ff6d00;font-size:0.7rem">${T().swalCTRWarning}</span>
           </div>
         </div>`,
-      confirmButtonText: '⚠️ Acknowledged — Proceed',
+      confirmButtonText: T().swalAcknowledge,
       confirmButtonColor: '#ff6d00',
       showCancelButton: true,
-      cancelButtonText: '✕ Cancel Mission',
+      cancelButtonText: T().swalCancelMission,
     });
 
   } else if (inDID) {
-    // DID only
     await Swal.fire({
       ...swalBase,
       icon: 'warning', iconColor: '#b47cff',
-      title: '🏙️ DID AREA DETECTED',
+      title: T().swalDIDTitle,
       html: `
         <div style="font-family:monospace;font-size:0.78rem;text-align:left">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
             <div style="width:18px;height:18px;border-radius:3px;background:rgba(180,124,255,0.5);border:1px solid #b47cff;flex-shrink:0"></div>
             <span style="color:#b47cff;font-weight:bold">人口集中地区 (Densely Inhabited District)</span>
           </div>
-          <p style="color:#c0d0e8;margin-bottom:8px">This polygon lies within or near a DID area.</p>
+          <p style="color:#c0d0e8;margin-bottom:8px">${T().swalDIDNear}</p>
           <ul style="color:#3d5470;padding-left:16px;line-height:2;font-size:0.7rem">
-            <li>Urban flights require permission from <b style="color:#c0d0e8">MLIT</b></li>
-            <li>File a <b style="color:#c0d0e8">飛行計画</b> via <a href="https://www.ossportal.dips.mlit.go.jp/portal/top/" target="_blank" style="color:#00e5ff">DIPS 2.0</a></li>
-            <li>Maintain visual line of sight at all times</li>
-            <li>Comply with local municipal regulations</li>
+            <li>${T().swalDIDLi1}</li>
+            <li>${T().swalDIDLi2} <a href="https://www.ossportal.dips.mlit.go.jp/portal/top/" target="_blank" style="color:#00e5ff">DIPS 2.0</a></li>
+            <li>${T().swalDIDLi3}</li>
+            <li>${T().swalDIDLi4}</li>
           </ul>
         </div>`,
-      confirmButtonText: '✅ Understood',
+      confirmButtonText: T().swalUnderstood,
       confirmButtonColor: '#b47cff',
       showCancelButton: true,
-      cancelButtonText: '🔗 Open DIPS 2.0',
+      cancelButtonText: '🔗 DIPS 2.0',
     }).then(r => {
       if (!r.isConfirmed) window.open('https://www.ossportal.dips.mlit.go.jp/portal/top/', '_blank');
     });
@@ -1646,6 +1735,364 @@ window.addEventListener('load', () => {
 });
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// THEME TOGGLE  (dark ↔ light)
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const MOON_SVG = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`;
+const SUN_SVG  = `<circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="2"/>
+  <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>`;
+
+let isDark = true;
+
+function toggleTheme() {
+  isDark = !isDark;
+  document.documentElement.classList.toggle('light', !isDark);
+  const icon = document.getElementById('themeIcon');
+  if (icon) icon.innerHTML = isDark ? MOON_SVG : SUN_SVG;
+  // Persist preference
+  try { localStorage.setItem('rv_theme', isDark ? 'dark' : 'light'); } catch(e) {}
+}
+
+// Apply saved theme on load
+(function() {
+  try {
+    const saved = localStorage.getItem('rv_theme');
+    if (saved === 'light') {
+      isDark = false;
+      document.documentElement.classList.add('light');
+      // Icon will be updated after DOM ready
+      document.addEventListener('DOMContentLoaded', () => {
+        const icon = document.getElementById('themeIcon');
+        if (icon) icon.innerHTML = SUN_SVG;
+      });
+    }
+  } catch(e) {}
+})();
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+let currentLang = 'en';
+const T = () => TRANSLATIONS[currentLang];
+
+// Create dropdown once and attach to body (escapes topbar stacking context)
+const _langDD = document.createElement('div');
+_langDD.id = 'langDropdown';
+_langDD.className = 'lang-dropdown';
+_langDD.innerHTML = `
+  <div class="lang-option" onclick="setLang('en')"><span class="lang-flag">🇺🇸</span> English</div>
+  <div class="lang-option" onclick="setLang('ja')"><span class="lang-flag">🇯🇵</span> 日本語</div>`;
+document.body.appendChild(_langDD);
+
+function toggleLangMenu() {
+  const dd = _langDD;
+  const btn = document.getElementById('langBtn');
+  const isOpen = dd.classList.contains('open');
+
+  if (isOpen) {
+    dd.classList.remove('open');
+    btn.classList.remove('active');
+    return;
+  }
+
+  // Position below the button
+  const rect = btn.getBoundingClientRect();
+  dd.style.top   = (rect.bottom + 6) + 'px';
+  dd.style.right = (window.innerWidth - rect.right) + 'px';
+  dd.classList.add('open');
+  btn.classList.add('active');
+
+  setTimeout(() => {
+    document.addEventListener('click', function handler(e) {
+      if (!dd.contains(e.target) && e.target !== btn && !btn.contains(e.target)) {
+        dd.classList.remove('open');
+        btn.classList.remove('active');
+      }
+      document.removeEventListener('click', handler);
+    });
+  }, 0);
+}
+function closeLangMenu(e) {
+  const btn = document.getElementById('langBtn');
+  if (!_langDD.contains(e.target) && !btn.contains(e.target)) {
+    _langDD.classList.remove('open');
+    btn.classList.remove('active');
+  }
+}
+function setLang(lang) {
+  currentLang = lang;
+  _langDD.classList.remove('open');
+  document.getElementById('langBtn').classList.remove('active');
+  _langDD.querySelectorAll('.lang-option').forEach(el => {
+    el.classList.toggle('selected', el.getAttribute('onclick').includes("'"+lang+"'"));
+  });
+  applyLang();
+}
+
+function applyLang() {
+  const t = TRANSLATIONS[currentLang];
+
+  // Keep button showing globe SVG (no text change needed)
+
+  // data-i18n elements
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (t[key] !== undefined) el.innerHTML = t[key];
+  });
+
+  // placeholders with data-i18n-placeholder
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    if (t[key] !== undefined) el.placeholder = t[key];
+  });
+
+  // Search input placeholder
+  const si = document.getElementById('searchInput');
+  if (si) si.placeholder = t.searchPlace;
+
+  // Rebuild VTOL cards to apply language to dynamic content
+  buildVtolGrid();
+
+  // Turn section titles (already rebuilt by buildVtolGrid but set again for safety)
+  document.querySelectorAll('.turn-section-title').forEach(el => el.textContent = t.turnCorr);
+  document.querySelectorAll('.vtol-spec-k').forEach(el => {
+    const txt = el.textContent.trim();
+    if (['Wingspan','翼幅'].includes(txt)) el.textContent = t.wingspan;
+    if (['Max wind','最大風速'].includes(txt)) el.textContent = t.maxWind;
+    if (['Range','航続距離'].includes(txt)) el.textContent = t.range;
+  });
+}
+
+const TRANSLATIONS = {
+  en: {
+    // topbar
+    labels:        'Labels',
+    minCorridor:   'Min corridor:',
+    searchPlace:   'Search city or place...',
+    // loading overlay
+    loadingText:   'ANALYZING WIDTHS...',
+    loadingSub:    'Computing perpendicular transects',
+    // coords bar
+    latLabel:      'Lat:',
+    lonLabel:      'Lon:',
+    // instructions
+    drawTitle:     'Draw river polygon',
+    step1:         'Click <strong>Draw Polygon</strong> below',
+    step2:         'Trace along <strong>Bank 1</strong> (one side)',
+    step3:         'Cross to <strong>Bank 2</strong> and trace back',
+    step4:         '<strong>Double-click</strong> to finish',
+    spanFull:      '⚠ Span FULL river — bank to bank!',
+    // sidebar sections
+    vtolAircraft:  'VTOL Aircraft',
+    analysisResults:'Analysis Results',
+    legend:        'Legend',
+    transects:     'Transects (sorted by width)',
+    saveShare:     'Save &amp; Share',
+    recentPolygons:'Recent Polygons',
+    // draw buttons
+    btnDraw:       'Draw River Polygon',
+    btnEdit:       'Edit Points',
+    btnUndo:       'Undo',
+    btnClear:      'Clear All',
+    // live perimeter
+    livePerimeter: '📍 Live Perimeter',
+    points:        'Points',
+    totalDistance: 'Total distance',
+    lastSegment:   'Last segment',
+    // stats
+    statTransects: 'Transects',
+    statNoFly:     '🚫 No-Fly sections',
+    statWarn:      '⚠ Warning sections',
+    statFlyable:   '✅ Flyable sections',
+    maxWidth:      'Max width',
+    minWidth:      'Min width',
+    riverLength:   'River length',
+    avgWidth:      'Avg width',
+    // legend
+    widthAnalysis: 'Width Analysis',
+    mapOverlays:   'Map Overlays',
+    // save
+    namePoly:      'Name this polygon...',
+    btnSave:       '💾 Save',
+    btnGeoJSON:    '⬇ GeoJSON',
+    btnShare:      '🔗 Share Link',
+    btnOpen:       '📁 Open File',
+    btnExport:     '⬇ Export All',
+    // turn section (dynamic cards)
+    turnCorr:      'Turnaround Corridor',
+    wingspan:      'Wingspan',
+    maxWind:       'Max wind',
+    range:         'Range',
+    // dynamic JS strings (used by setDrawingMode, hints, etc.)
+    cancelDrawing: '⏹ Cancel Drawing',
+    drawPolygon:   '✏ Draw River Polygon',
+    hintDraw:      '✏ Trace Bank 1 → Bank 2 → Double-click to finish · ↩ Undo or Z',
+    hintEdit:      '✎ Drag any point to move · Click ✔ Save Edits when done',
+    saveEdits:     '✔ Save Edits',
+    editPoints:    '✎ Edit Points',
+    toastSaved:    '✅ Polygon saved!',
+    noPolygon:     'Draw a polygon first!',
+    noSaved:       'No saved polygons.',
+    noSavedYet:    'No saved polygons yet',
+    noValidData:   'No valid polygon data found.',
+    // mission report SweetAlerts
+    swalAbortTitle:    '🚫 MISSION ABORT',
+    swalCannotFly:     'CANNOT fly this route',
+    swalNarrowest:     'Narrowest section:',
+    swalRequired:      'Required corridor:',
+    swalAbortMsg:      'The entire river is too narrow.<br>Select a smaller aircraft or survey a different section.',
+    swalChangeAircraft:'🔄 Change Aircraft',
+    swalDismiss:       '✕ Dismiss',
+    swalHighRisk:      '⚠️ HIGH RISK MISSION',
+    swalPartial:       '⚠️ PARTIAL CLEARANCE',
+    swalFlyable:       'Flyable',
+    swalWarning:       'Warning',
+    swalNoFly:         'No-Fly',
+    swalCoverage:      'Coverage',
+    swalRedHint:       '🔴 Red transects on map = no-fly zones for this aircraft.',
+    swalProceed:       '✅ Proceed with Caution',
+    swalMissionGo:     'MISSION GO',
+    swalAllFlyable:    'All {n} sections flyable · {pct}% coverage',
+    // zone warning SweetAlerts
+    swalDualViolation: '🚨 DUAL AIRSPACE VIOLATION',
+    swalNoFlyOverlap:  'NO-FLY ZONE OVERLAP',
+    swalDIDDetected:   'DID POPULATED AREA DETECTED',
+    swalDIDOverlap:    'This polygon overlaps a 人口集中地区 (Densely Inhabited District).<br>Urban airspace requires prior approval from MLIT / JAAB.',
+    swalUnderstandRisks:'⚠️ I Understand the Risks',
+    swalCancelMission: '✕ Cancel Mission',
+    swalNoFlyTitle:    '🚫 NO-FLY ZONE VIOLATION',
+    swalNoFlyDesc:     'Your polygon overlaps the following controlled airspace zones:',
+    swalCTRWarning:    "⚠️ Flying in CTR airspace without ATC clearance is illegal under Japan's Civil Aeronautics Act.",
+    swalAcknowledge:   '⚠️ Acknowledged — Proceed',
+    swalDIDTitle:      '🏙️ DID AREA DETECTED',
+    swalDIDNear:       'This polygon lies within or near a DID area.',
+    swalDIDLi1:        'Urban flights require permission from <b style="color:#c0d0e8">MLIT</b>',
+    swalDIDLi2:        'File a <b style="color:#c0d0e8">飛行計画</b> via',
+    swalDIDLi3:        'Maintain visual line of sight at all times',
+    swalDIDLi4:        'Comply with local municipal regulations',
+    swalUnderstood:    '✅ Understood',
+    // geolocation
+    swalGeoUnsupported:   'Not supported',
+    swalGeoUnsupportedMsg:'Geolocation is not available in this browser.',
+    swalGeoErrTitle:   'Location error',
+    swalGeoErr1:       'Location access denied. Please allow location in your browser.',
+    swalGeoErr2:       'Position unavailable. Check your device GPS.',
+    swalGeoErr3:       'Location request timed out. Try again.',
+  },
+  ja: {
+    // topbar
+    labels:        'ラベル',
+    minCorridor:   '最小回廊幅:',
+    searchPlace:   '都市・地名を検索...',
+    // loading overlay
+    loadingText:   '幅を解析中...',
+    loadingSub:    '垂直横断面を計算中',
+    // coords bar
+    latLabel:      '緯度:',
+    lonLabel:      '経度:',
+    // instructions
+    drawTitle:     '河川ポリゴンを描く',
+    step1:         '下の<strong>ポリゴン描画</strong>をクリック',
+    step2:         '<strong>岸1</strong>に沿ってトレース（片側）',
+    step3:         '<strong>岸2</strong>へ渡って戻る',
+    step4:         '<strong>ダブルクリック</strong>で完了',
+    spanFull:      '⚠ 両岸を必ず結ぶこと！',
+    // sidebar sections
+    vtolAircraft:  'VTOL機体',
+    analysisResults:'解析結果',
+    legend:        '凡例',
+    transects:     '横断面（幅順）',
+    saveShare:     '保存 &amp; 共有',
+    recentPolygons:'最近のポリゴン',
+    // draw buttons
+    btnDraw:       '河川ポリゴンを描く',
+    btnEdit:       '点を編集',
+    btnUndo:       '元に戻す',
+    btnClear:      '全削除',
+    // live perimeter
+    livePerimeter: '📍 リアルタイム周長',
+    points:        '頂点数',
+    totalDistance: '総距離',
+    lastSegment:   '最終セグメント',
+    // stats
+    statTransects: '横断面数',
+    statNoFly:     '🚫 飛行禁止区間',
+    statWarn:      '⚠ 警告区間',
+    statFlyable:   '✅ 飛行可能区間',
+    maxWidth:      '最大幅',
+    minWidth:      '最小幅',
+    riverLength:   '河川延長',
+    avgWidth:      '平均幅',
+    // legend
+    widthAnalysis: '幅解析',
+    mapOverlays:   'マップオーバーレイ',
+    // save
+    namePoly:      'ポリゴン名を入力...',
+    btnSave:       '💾 保存',
+    btnGeoJSON:    '⬇ GeoJSON',
+    btnShare:      '🔗 共有リンク',
+    btnOpen:       '📁 ファイルを開く',
+    btnExport:     '⬇ 全エクスポート',
+    // turn section
+    turnCorr:      '旋回回廊',
+    wingspan:      '翼幅',
+    maxWind:       '最大風速',
+    range:         '航続距離',
+    // dynamic JS strings
+    cancelDrawing: '⏹ 描画キャンセル',
+    drawPolygon:   '✏ 河川ポリゴンを描く',
+    hintDraw:      '✏ 岸1→岸2をトレース · ダブルクリックで完了 · ↩ 元に戻す',
+    hintEdit:      '✎ 点をドラッグして移動 · ✔ 編集を保存 をクリック',
+    saveEdits:     '✔ 編集を保存',
+    editPoints:    '✎ 点を編集',
+    toastSaved:    '✅ ポリゴンを保存しました！',
+    noPolygon:     'ポリゴンを描いてください！',
+    noSaved:       '保存されたポリゴンがありません。',
+    noSavedYet:    '保存されたポリゴンがありません',
+    noValidData:   '有効なポリゴンデータが見つかりません。',
+    // mission report SweetAlerts
+    swalAbortTitle:    '🚫 ミッション中止',
+    swalCannotFly:     'はこのルートを飛行できません',
+    swalNarrowest:     '最狭区間:',
+    swalRequired:      '必要回廊幅:',
+    swalAbortMsg:      '河川全体が狭すぎます。<br>小型機を選択するか別の区間を調査してください。',
+    swalChangeAircraft:'🔄 機体を変更',
+    swalDismiss:       '✕ 閉じる',
+    swalHighRisk:      '⚠️ 高リスクミッション',
+    swalPartial:       '⚠️ 部分的クリアランス',
+    swalFlyable:       '飛行可能',
+    swalWarning:       '警告',
+    swalNoFly:         '飛行禁止',
+    swalCoverage:      'カバレッジ',
+    swalRedHint:       '🔴 マップの赤い横断面 = この機体の飛行禁止区間',
+    swalProceed:       '✅ 注意して続行',
+    swalMissionGo:     'ミッション可',
+    swalAllFlyable:    '全{n}区間飛行可能 · {pct}%カバレッジ',
+    // zone warning SweetAlerts
+    swalDualViolation: '🚨 二重空域違反',
+    swalNoFlyOverlap:  '飛行禁止区域重複',
+    swalDIDDetected:   'DID人口集中地区検出',
+    swalDIDOverlap:    'このポリゴンは人口集中地区と重複しています。<br>都市上空飛行にはMLIT/JAABの事前承認が必要です。',
+    swalUnderstandRisks:'⚠️ リスクを理解した上で進む',
+    swalCancelMission: '✕ ミッションキャンセル',
+    swalNoFlyTitle:    '🚫 飛行禁止区域違反',
+    swalNoFlyDesc:     'ポリゴンが以下の管制空域と重複しています:',
+    swalCTRWarning:    '⚠️ ATC許可なしのCTR空域飛行は航空法違反です。',
+    swalAcknowledge:   '⚠️ 了解 — 続行',
+    swalDIDTitle:      '🏙️ DID人口集中地区',
+    swalDIDNear:       'このポリゴンはDID地区内または近傍に位置します。',
+    swalDIDLi1:        '都市上空飛行には<b style="color:#c0d0e8">国土交通省</b>の許可が必要',
+    swalDIDLi2:        '<b style="color:#c0d0e8">飛行計画</b>を以下で申請:',
+    swalDIDLi3:        '常に目視内飛行を維持すること',
+    swalDIDLi4:        '地方自治体の規制を遵守すること',
+    swalUnderstood:    '✅ 了解',
+    // geolocation
+    swalGeoUnsupported:   '非対応',
+    swalGeoUnsupportedMsg:'このブラウザでは位置情報が利用できません。',
+    swalGeoErrTitle:   '位置情報エラー',
+    swalGeoErr1:       '位置情報へのアクセスが拒否されました。ブラウザで許可してください。',
+    swalGeoErr2:       '位置情報を取得できません。デバイスのGPSを確認してください。',
+    swalGeoErr3:       '位置情報の取得がタイムアウトしました。再試行してください。',
+  }
+};
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // LOCATE ME — fly to device GPS position, like Google Maps
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 let locateMarker = null;
@@ -1654,7 +2101,7 @@ let locateCircle = null;
 function locateMe(silent = false) {
   const btn = document.getElementById('locateBtn');
   if (!navigator.geolocation) {
-    if (!silent) Swal.fire({ icon:'error', title:'Not supported', text:'Geolocation is not available in this browser.', background:'#0b1322', color:'#e0e8f0' });
+    if (!silent) Swal.fire({ icon:'error', title: T().swalGeoUnsupported, text: T().swalGeoUnsupportedMsg, background:'#0b1322', color:'#e0e8f0' });
     return;
   }
 
@@ -1722,11 +2169,11 @@ function locateMe(silent = false) {
       btn.classList.remove('locating');
       if (!silent) {
         const msgs = {
-          1: 'Location access denied. Please allow location in your browser.',
-          2: 'Position unavailable. Check your device GPS.',
-          3: 'Location request timed out. Try again.'
+          1: T().swalGeoErr1,
+          2: T().swalGeoErr2,
+          3: T().swalGeoErr3,
         };
-        Swal.fire({ icon:'warning', title:'Location error', text: msgs[err.code] || err.message, background:'#0b1322', color:'#e0e8f0' });
+        Swal.fire({ icon:'warning', title: T().swalGeoErrTitle, text: msgs[err.code] || err.message, background:'#0b1322', color:'#e0e8f0' });
       }
     },
     { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 }
