@@ -32,6 +32,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--d
 .lbl-toggle{display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:0.68rem;color:var(--text);cursor:pointer}
 .lbl-toggle input{accent-color:var(--cyan)}
 .sep{width:1px;height:22px;background:var(--border)}
+.lang-btn{font-family:var(--mono);font-size:0.68rem;font-weight:700;letter-spacing:1px;padding:4px 9px;background:var(--bg);border:1.5px solid var(--border);color:var(--muted);cursor:pointer;border-radius:2px;transition:all 0.15s;flex-shrink:0}
+.lang-btn:hover{color:var(--cyan);border-color:var(--cyan)}
+.lang-btn.ja{color:var(--cyan);border-color:var(--cyan);background:rgba(0,229,255,0.08)}
 .locate-btn{position:absolute;bottom:38px;right:10px;z-index:1000;display:flex;align-items:center;justify-content:center;width:36px;height:36px;background:var(--panel);border:1.5px solid var(--border);border-radius:4px;color:var(--muted);cursor:pointer;transition:color 0.15s,border-color 0.15s,background 0.15s,box-shadow 0.15s;box-shadow:0 2px 10px rgba(0,0,0,0.5)}
 .locate-btn:hover{color:var(--cyan);border-color:var(--cyan);background:rgba(0,229,255,0.06);box-shadow:0 0 14px rgba(0,229,255,0.2)}
 .locate-btn.locating{color:var(--cyan);border-color:var(--cyan);animation:pulse-loc 1s infinite}
@@ -236,23 +239,25 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--d
   </div>
 
   <div class="sep"></div>
-  <label class="lbl-toggle"><input type="checkbox" id="toggleLabels" checked> Labels</label>
+  <label class="lbl-toggle"><input type="checkbox" id="toggleLabels" checked> <span data-i18n="labels">Labels</span></label>
   <div class="sep"></div>
   <div class="thr-ctrl">
-    <span id="thrLabel">Min corridor:</span>
+    <span id="thrLabel" data-i18n="minCorridor">Min corridor:</span>
     <input type="number" id="thresholdInput" value="400" min="10" max="9999" step="10">
     <span>m</span>
   </div>
+  <div class="sep"></div>
+  <button class="lang-btn" id="langBtn" onclick="toggleLang()" title="日本語 / English">EN</button>
 </div>
 
 <div class="sidebar" id="sidebar">
 
   <div class="instructions">
-    <h3>📐 Draw river polygon</h3>
-    <div class="step"><div class="step-num">1</div><p>Click <strong>Draw Polygon</strong> below</p></div>
-    <div class="step"><div class="step-num">2</div><p>Trace along <strong>Bank 1</strong> (one side)</p></div>
-    <div class="step"><div class="step-num">3</div><p>Cross to <strong>Bank 2</strong> and trace back</p></div>
-    <div class="step"><div class="step-num">4</div><p><strong>Double-click</strong> to finish</p></div>
+    <h3>📐 <span data-i18n="drawTitle">Draw river polygon</span></h3>
+    <div class="step"><div class="step-num">1</div><p data-i18n="step1">Click <strong>Draw Polygon</strong> below</p></div>
+    <div class="step"><div class="step-num">2</div><p data-i18n="step2">Trace along <strong>Bank 1</strong> (one side)</p></div>
+    <div class="step"><div class="step-num">3</div><p data-i18n="step3">Cross to <strong>Bank 2</strong> and trace back</p></div>
+    <div class="step"><div class="step-num">4</div><p data-i18n="step4"><strong>Double-click</strong> to finish</p></div>
     <svg viewBox="0 0 240 76" width="100%" style="margin-top:7px;display:block">
       <defs>
         <marker id="aG" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto"><polygon points="0,0 5,2.5 0,5" fill="#00e676"/></marker>
@@ -270,12 +275,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--d
       <line x1="212" y1="19" x2="212" y2="56" stroke="#ff9800" stroke-width="1.4" marker-end="url(#aO)"/>
       <text x="220" y="41" fill="#ff9800" font-size="6.5" font-family="monospace">②</text>
     </svg>
-    <p style="font-size:0.68rem;color:var(--orange);font-family:monospace;margin-top:6px">⚠ Span FULL river — bank to bank!</p>
+    <p style="font-size:0.68rem;color:var(--orange);font-family:monospace;margin-top:6px"><span data-i18n="spanFull">⚠ Span FULL river — bank to bank!</span></p>
   </div>
 
 
   <!-- ✈ VTOL SELECTOR -->
-  <div class="c-head" id="hVtol" onclick="tog('bVtol','hVtol')"><span>✈ VTOL Aircraft</span><span class="caret">▾</span></div>
+  <div class="c-head" id="hVtol" onclick="tog('bVtol','hVtol')"><span>✈ <span data-i18n="vtolAircraft">VTOL Aircraft</span></span><span class="caret">▾</span></div>
   <div class="c-body" id="bVtol">
     <div class="vtol-section">
       <div class="vtol-grid" id="vtolGrid">
@@ -285,17 +290,17 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--d
     </div>
   </div>
 
-  <button class="btn-main" id="btnDraw">✏ Draw River Polygon</button>
+  <button class="btn-main" id="btnDraw">✏ <span data-i18n="btnDraw">Draw River Polygon</span></button>
   <div style="display:flex;gap:6px;margin:5px 12px 0">
-    <button class="btn-sec" id="btnEdit" style="flex:1;border-color:var(--cyan);color:var(--cyan);display:none">✎ Edit Points</button>
-    <button class="btn-sec" id="btnUndo" style="flex:1">↩ Undo</button>
+    <button class="btn-sec" id="btnEdit" style="flex:1;border-color:var(--cyan);color:var(--cyan);display:none">✎ <span data-i18n="btnEdit">Edit Points</span></button>
+    <button class="btn-sec" id="btnUndo" style="flex:1">↩ <span data-i18n="btnUndo">Undo</span></button>
   </div>
-  <button class="btn-sec" id="btnClearWidth" style="margin:5px 12px 0;width:calc(100% - 24px)">✕ Clear All</button>
+  <button class="btn-sec" id="btnClearWidth" style="margin:5px 12px 0;width:calc(100% - 24px)">✕ <span data-i18n="btnClear">Clear All</span></button>
 
   <div id="liveDistBox" style="display:none;margin:10px 12px 0;padding:10px 12px;background:rgba(0,229,255,0.05);border:1px solid rgba(0,229,255,0.25);border-radius:3px">
-    <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:2px;color:var(--cyan);text-transform:uppercase;margin-bottom:6px">📍 Live Perimeter</div>
+    <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:2px;color:var(--cyan);text-transform:uppercase;margin-bottom:6px"><span data-i18n="livePerimeter">📍 Live Perimeter</span></div>
     <div style="display:flex;justify-content:space-between;margin-top:4px">
-      <span style="font-family:var(--mono);font-size:0.65rem;color:var(--muted)">Points</span>
+      <span style="font-family:var(--mono);font-size:0.65rem;color:var(--muted)" data-i18n="points">Points</span>
       <span style="font-family:var(--mono);font-size:0.9rem;font-weight:bold;color:var(--cyan)" id="livePoints">0</span>
     </div>
     <div style="display:flex;justify-content:space-between;margin-top:4px">
@@ -309,35 +314,35 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--d
   </div>
 
   <!-- ANALYSIS RESULTS -->
-  <div class="c-head" id="hStats" onclick="tog('bStats','hStats')"><span>📊 Analysis Results</span><span class="caret">▾</span></div>
+  <div class="c-head" id="hStats" onclick="tog('bStats','hStats')"><span>📊 <span data-i18n="analysisResults">Analysis Results</span></span><span class="caret">▾</span></div>
   <div class="c-body" id="bStats">
     <div class="stats">
-      <div class="stat-row"><span class="stat-label">Transects</span><span class="stat-value sv-total" id="statTotal">—</span></div>
-      <div class="stat-row"><span class="stat-label">🚫 No-Fly sections</span><span class="stat-value sv-wide" id="statWide">—</span></div>
-      <div class="stat-row"><span class="stat-label" style="color:var(--yellow)">⚠ Warning sections</span><span class="stat-value" style="color:var(--yellow)" id="statWarn">—</span></div>
-      <div class="stat-row"><span class="stat-label">✅ Flyable sections</span><span class="stat-value sv-ok" id="statNormal">—</span></div>
-      <div class="stat-row"><span class="stat-label">Max width</span><span class="stat-value sv-max" id="statMax">—</span></div>
-      <div class="stat-row"><span class="stat-label">Min width</span><span class="stat-value sv-ok" id="statMin">—</span></div>
+      <div class="stat-row"><span class="stat-label" data-i18n="statTransects">Transects</span><span class="stat-value sv-total" id="statTotal">—</span></div>
+      <div class="stat-row"><span class="stat-label" data-i18n="statNoFly">🚫 No-Fly sections</span><span class="stat-value sv-wide" id="statWide">—</span></div>
+      <div class="stat-row"><span class="stat-label" style="color:var(--yellow)" data-i18n="statWarn">⚠ Warning sections</span><span class="stat-value" style="color:var(--yellow)" id="statWarn">—</span></div>
+      <div class="stat-row"><span class="stat-label" data-i18n="statFlyable">✅ Flyable sections</span><span class="stat-value sv-ok" id="statNormal">—</span></div>
+      <div class="stat-row"><span class="stat-label" data-i18n="maxWidth">Max width</span><span class="stat-value sv-max" id="statMax">—</span></div>
+      <div class="stat-row"><span class="stat-label" data-i18n="minWidth">Min width</span><span class="stat-value sv-ok" id="statMin">—</span></div>
       <div class="stat-row" style="margin-top:4px;padding-top:8px;border-top:1px solid var(--border)">
-        <span class="stat-label">River length</span>
+        <span class="stat-label" data-i18n="riverLength">River length</span>
         <span class="stat-value" style="color:var(--purple)" id="statLength">—</span>
       </div>
       <div class="stat-row">
-        <span class="stat-label">Avg width</span>
+        <span class="stat-label" data-i18n="avgWidth">Avg width</span>
         <span class="stat-value" style="color:var(--cyan)" id="statAvg">—</span>
       </div>
     </div>
   </div>
 
   <!-- LEGEND -->
-  <div class="c-head" id="hLegend" onclick="tog('bLegend','hLegend')"><span>🗺 Legend</span><span class="caret">▾</span></div>
+  <div class="c-head" id="hLegend" onclick="tog('bLegend','hLegend')"><span>🗺 <span data-i18n="legend">Legend</span></span><span class="caret">▾</span></div>
   <div class="c-body" id="bLegend">
     <div class="legend">
-      <div class="legend-title">Width Analysis</div>
+      <div class="legend-title" data-i18n="widthAnalysis">Width Analysis</div>
       <div class="legend-item"><div class="leg-line" style="background:#ff3d3d"></div>🚫 No-Fly — below 70% of min corridor</div>
       <div class="legend-item"><div class="leg-line" style="background:#ffe600"></div>⚠ Warning — 70–100% of min corridor</div>
       <div class="legend-item"><div class="leg-line" style="background:#00e676"></div>✅ Flyable — safe corridor</div>
-      <div class="legend-title">Map Overlays</div>
+      <div class="legend-title" data-i18n="mapOverlays">Map Overlays</div>
       <div class="legend-item"><div class="leg-box" style="background:rgba(255,50,50,0.25);border:2px solid #ff3333"></div>No-Fly Zone CTR (空港)</div>
       <div class="legend-item"><div class="leg-box" style="background:rgba(255,165,0,0.25);border:2px dashed orange"></div>Restricted Airspace</div>
       <div class="legend-item"><div class="leg-box" style="background:rgba(180,124,255,0.4);border:1px solid var(--purple)"></div>DID 人口集中地区 2020</div>
@@ -349,32 +354,32 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--d
   </div>
 
   <!-- TRANSECTS -->
-  <div class="c-head" id="hTransects" style="display:none" onclick="tog('bTransects','hTransects')"><span>📏 Transects (sorted by width)</span><span class="caret">▾</span></div>
+  <div class="c-head" id="hTransects" style="display:none" onclick="tog('bTransects','hTransects')"><span>📏 <span data-i18n="transects">Transects (sorted by width)</span></span><span class="caret">▾</span></div>
   <div class="c-body" id="bTransects">
     <div class="t-list" id="transectList"></div>
   </div>
 
   <!-- SAVE & SHARE -->
-  <div class="c-head" id="hSave" onclick="tog('bSave','hSave')"><span>💾 Save &amp; Share</span><span class="caret">▾</span></div>
+  <div class="c-head" id="hSave" onclick="tog('bSave','hSave')"><span>💾 <span data-i18n="saveShare">Save &amp; Share</span></span><span class="caret">▾</span></div>
   <div class="c-body" id="bSave">
     <div style="margin:10px 12px 0;display:flex;gap:6px">
-      <input id="polyName" type="text" placeholder="Name this polygon..." style="flex:1;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:6px 8px;outline:none;border-radius:2px;min-width:0">
-      <button onclick="savePolygon()" style="background:var(--green);color:#000;border:none;font-family:var(--mono);font-size:0.7rem;font-weight:bold;padding:6px 10px;cursor:pointer;border-radius:2px">💾 Save</button>
+      <input id="polyName" type="text" placeholder="Name this polygon..." data-i18n-placeholder="namePoly" style="flex:1;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:6px 8px;outline:none;border-radius:2px;min-width:0">
+      <button onclick="savePolygon()" style="background:var(--green);color:#000;border:none;font-family:var(--mono);font-size:0.7rem;font-weight:bold;padding:6px 10px;cursor:pointer;border-radius:2px"><span data-i18n="btnSave">💾 Save</span></button>
     </div>
     <div style="margin:6px 12px 10px;display:flex;gap:6px">
-      <button onclick="exportGeoJSON()" style="flex:1;background:transparent;color:var(--cyan);border:1px solid var(--border);font-family:var(--mono);font-size:0.65rem;padding:6px;cursor:pointer;border-radius:2px">⬇ GeoJSON</button>
-      <button onclick="sharePolygon()" style="flex:1;background:transparent;color:var(--purple);border:1px solid var(--border);font-family:var(--mono);font-size:0.65rem;padding:6px;cursor:pointer;border-radius:2px">🔗 Share Link</button>
+      <button onclick="exportGeoJSON()" style="flex:1;background:transparent;color:var(--cyan);border:1px solid var(--border);font-family:var(--mono);font-size:0.65rem;padding:6px;cursor:pointer;border-radius:2px"><span data-i18n="btnGeoJSON">⬇ GeoJSON</span></button>
+      <button onclick="sharePolygon()" style="flex:1;background:transparent;color:var(--purple);border:1px solid var(--border);font-family:var(--mono);font-size:0.65rem;padding:6px;cursor:pointer;border-radius:2px"><span data-i18n="btnShare">🔗 Share Link</span></button>
     </div>
   </div>
 
   <!-- RECENT POLYGONS -->
-  <div class="c-head" id="hRecent" onclick="tog('bRecent','hRecent')"><span>🕒 Recent Polygons</span><span class="caret">▾</span></div>
+  <div class="c-head" id="hRecent" onclick="tog('bRecent','hRecent')"><span>🕒 <span data-i18n="recentPolygons">Recent Polygons</span></span><span class="caret">▾</span></div>
   <div class="c-body" id="bRecent">
     <div style="margin:8px 12px 0;display:flex;gap:6px">
       <label style="flex:1;background:transparent;color:var(--orange);border:1px solid var(--border);font-family:var(--mono);font-size:0.65rem;padding:6px;cursor:pointer;border-radius:2px;text-align:center">
-        📁 Open File<input type="file" id="importFile" accept=".json,.geojson" style="display:none" onchange="importSavedFile(event)">
+        <span data-i18n="btnOpen">📁 Open File</span><input type="file" id="importFile" accept=".json,.geojson" style="display:none" onchange="importSavedFile(event)">
       </label>
-      <button onclick="exportAllSaved()" style="flex:1;background:transparent;color:var(--muted);border:1px solid var(--border);font-family:var(--mono);font-size:0.65rem;padding:6px;cursor:pointer;border-radius:2px">⬇ Export All</button>
+      <button onclick="exportAllSaved()" style="flex:1;background:transparent;color:var(--muted);border:1px solid var(--border);font-family:var(--mono);font-size:0.65rem;padding:6px;cursor:pointer;border-radius:2px"><span data-i18n="btnExport">⬇ Export All</span></button>
     </div>
     <div id="recentList" style="padding:6px 8px 12px"></div>
   </div>
@@ -1644,6 +1649,171 @@ applyVtolThreshold();
 window.addEventListener('load', () => {
   setTimeout(() => locateMe(true), 800); // silent=true so denial won't show alert
 });
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// LANGUAGE TOGGLE  (English ↔ 日本語)
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const TRANSLATIONS = {
+  en: {
+    // topbar
+    labels:        'Labels',
+    minCorridor:   'Min corridor:',
+    // instructions
+    drawTitle:     'Draw river polygon',
+    step1:         'Click <strong>Draw Polygon</strong> below',
+    step2:         'Trace along <strong>Bank 1</strong> (one side)',
+    step3:         'Cross to <strong>Bank 2</strong> and trace back',
+    step4:         '<strong>Double-click</strong> to finish',
+    spanFull:      '⚠ Span FULL river — bank to bank!',
+    // sidebar sections
+    vtolAircraft:  'VTOL Aircraft',
+    analysisResults:'Analysis Results',
+    legend:        'Legend',
+    transects:     'Transects (sorted by width)',
+    saveShare:     'Save & Share',
+    recentPolygons:'Recent Polygons',
+    // buttons
+    btnDraw:       'Draw River Polygon',
+    btnEdit:       'Edit Points',
+    btnUndo:       'Undo',
+    btnClear:      'Clear All',
+    btnSave:       '💾 Save',
+    btnGeoJSON:    '⬇ GeoJSON',
+    btnShare:      '🔗 Share Link',
+    btnOpen:       '📁 Open File',
+    btnExport:     '⬇ Export All',
+    // stats
+    statTransects: 'Transects',
+    statNoFly:     '🚫 No-Fly sections',
+    statWarn:      '⚠ Warning sections',
+    statFlyable:   '✅ Flyable sections',
+    maxWidth:      'Max width',
+    minWidth:      'Min width',
+    riverLength:   'River length',
+    avgWidth:      'Avg width',
+    // legend
+    widthAnalysis: 'Width Analysis',
+    mapOverlays:   'Map Overlays',
+    // live perimeter
+    livePerimeter: '📍 Live Perimeter',
+    points:        'Points',
+    // placeholders
+    namePoly:      'Name this polygon...',
+    searchPlace:   'Search city or place...',
+    // turn section
+    turnCorr:      'Turnaround Corridor',
+    // card specs
+    wingspan:      'Wingspan',
+    maxWind:       'Max wind',
+    range:         'Range',
+    // mission report
+    missionGo:     '✅ MISSION GO',
+    missionAbort:  '🚫 MISSION ABORT',
+    missionPartial:'⚠ PARTIAL MISSION',
+  },
+  ja: {
+    // topbar
+    labels:        'ラベル',
+    minCorridor:   '最小回廊幅:',
+    // instructions
+    drawTitle:     '河川ポリゴンを描く',
+    step1:         '下の<strong>ポリゴン描画</strong>をクリック',
+    step2:         '<strong>岸1</strong>に沿ってトレース（片側）',
+    step3:         '<strong>岸2</strong>へ渡って戻る',
+    step4:         '<strong>ダブルクリック</strong>で完了',
+    spanFull:      '⚠ 両岸を必ず結ぶこと！',
+    // sidebar sections
+    vtolAircraft:  'VTOL機体',
+    analysisResults:'解析結果',
+    legend:        '凡例',
+    transects:     '横断面（幅順）',
+    saveShare:     '保存 & 共有',
+    recentPolygons:'最近のポリゴン',
+    // buttons
+    btnDraw:       '河川ポリゴンを描く',
+    btnEdit:       '点を編集',
+    btnUndo:       '元に戻す',
+    btnClear:      '全削除',
+    btnSave:       '💾 保存',
+    btnGeoJSON:    '⬇ GeoJSON',
+    btnShare:      '🔗 共有リンク',
+    btnOpen:       '📁 ファイルを開く',
+    btnExport:     '⬇ 全エクスポート',
+    // stats
+    statTransects: '横断面数',
+    statNoFly:     '🚫 飛行禁止区間',
+    statWarn:      '⚠ 警告区間',
+    statFlyable:   '✅ 飛行可能区間',
+    maxWidth:      '最大幅',
+    minWidth:      '最小幅',
+    riverLength:   '河川延長',
+    avgWidth:      '平均幅',
+    // legend
+    widthAnalysis: '幅解析',
+    mapOverlays:   'マップオーバーレイ',
+    // live perimeter
+    livePerimeter: '📍 リアルタイム周長',
+    points:        '頂点数',
+    // placeholders
+    namePoly:      'ポリゴン名を入力...',
+    searchPlace:   '都市・地名を検索...',
+    // turn section
+    turnCorr:      '旋回回廊',
+    // card specs
+    wingspan:      '翼幅',
+    maxWind:       '最大風速',
+    range:         '航続距離',
+    // mission report
+    missionGo:     '✅ ミッション可',
+    missionAbort:  '🚫 ミッション中止',
+    missionPartial:'⚠ 部分ミッション',
+  }
+};
+
+let currentLang = 'en';
+
+function toggleLang() {
+  currentLang = currentLang === 'en' ? 'ja' : 'en';
+  applyLang();
+}
+
+function applyLang() {
+  const t = TRANSLATIONS[currentLang];
+  const btn = document.getElementById('langBtn');
+
+  // Update button
+  btn.textContent = currentLang === 'en' ? 'EN' : 'JP';
+  btn.classList.toggle('ja', currentLang === 'ja');
+
+  // Update all data-i18n elements
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (t[key] !== undefined) el.innerHTML = t[key];
+  });
+
+  // Update placeholders
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    if (t[key] !== undefined) el.placeholder = t[key];
+  });
+
+  // Search input placeholder
+  const si = document.getElementById('searchInput');
+  if (si) si.placeholder = t.searchPlace;
+
+  // Update turn section headers (rendered dynamically in cards)
+  document.querySelectorAll('.turn-section-title').forEach(el => {
+    el.textContent = t.turnCorr;
+  });
+
+  // Update card spec labels (Wingspan, Max wind, Range)
+  document.querySelectorAll('.vtol-spec-k').forEach(el => {
+    const txt = el.textContent.trim();
+    if (txt === 'Wingspan' || txt === '翼幅') el.textContent = t.wingspan;
+    if (txt === 'Max wind' || txt === '最大風速') el.textContent = t.maxWind;
+    if (txt === 'Range' || txt === '航続距離') el.textContent = t.range;
+  });
+}
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // LOCATE ME — fly to device GPS position, like Google Maps
