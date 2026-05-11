@@ -203,6 +203,19 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--d
 .recent-btn{background:none;border:none;cursor:pointer;font-size:0.75rem;padding:2px 4px;border-radius:2px;color:var(--muted);transition:all 0.1s}
 .recent-btn:hover{background:rgba(255,255,255,0.07);color:var(--text)}
 .recent-empty{font-family:var(--mono);font-size:0.68rem;color:var(--muted);text-align:center;padding:12px 8px}
+.poly-item{display:flex;align-items:center;gap:6px;padding:7px 10px;border-radius:3px;border:1px solid var(--border);background:var(--panel2);cursor:pointer;transition:all 0.15s;margin:0 2px}
+.poly-item:hover{border-color:var(--cyan);background:rgba(0,229,255,0.05)}
+.poly-item.active{border-color:var(--cyan);background:rgba(0,229,255,0.08);box-shadow:0 0 8px rgba(0,229,255,0.12)}
+.poly-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;border:2px solid}
+.poly-name{font-family:var(--mono);font-size:0.7rem;color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.poly-pct{font-family:var(--mono);font-size:0.65rem;font-weight:bold;flex-shrink:0}
+.poly-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.8rem;padding:2px 4px;border-radius:2px;flex-shrink:0;line-height:1;transition:color 0.1s}
+.poly-del:hover{color:var(--red)}
+/* measure tool */
+.measure-label{background:var(--panel);border:1px solid var(--green);color:var(--green);font-family:var(--mono);font-size:0.68rem;padding:3px 7px;border-radius:3px;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,0.5)}
+.btn-sec.measure-active{border-color:var(--green)!important;color:var(--green)!important;background:rgba(0,230,118,0.1)!important}
+:root.light .poly-item{border-color:var(--border)}
+:root.light .poly-item.active{border-color:#9b4b1c;background:rgba(155,75,28,0.08)}
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:99999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
 .modal{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:20px;width:420px;max-width:90vw}
 .modal h3{font-family:var(--mono);font-size:0.75rem;letter-spacing:2px;color:var(--cyan);text-transform:uppercase;margin-bottom:14px}
@@ -394,7 +407,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--d
     <button class="btn-sec" id="btnEdit" style="flex:1;border-color:var(--cyan);color:var(--cyan);display:none">✎ <span data-i18n="btnEdit">Edit Points</span></button>
     <button class="btn-sec" id="btnUndo" style="flex:1">↩ <span data-i18n="btnUndo">Undo</span></button>
   </div>
-  <button class="btn-sec" id="btnClearWidth" style="margin:5px 12px 0;width:calc(100% - 24px)">✕ <span data-i18n="btnClear">Clear All</span></button>
+  <div style="display:flex;gap:6px;margin:5px 12px 0">
+    <button class="btn-sec" id="btnMeasure" style="flex:1;border-color:var(--green);color:var(--green)" onclick="toggleMeasure()">📏 <span data-i18n="btnMeasure">Measure Distance</span></button>
+    <button class="btn-sec" id="btnClearWidth" style="flex:1">✕ <span data-i18n="btnClear">Clear All</span></button>
+  </div>
 
   <div id="liveDistBox" style="display:none;margin:10px 12px 0;padding:10px 12px;background:rgba(0,229,255,0.05);border:1px solid rgba(0,229,255,0.25);border-radius:3px">
     <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:2px;color:var(--cyan);text-transform:uppercase;margin-bottom:6px"><span data-i18n="livePerimeter">📍 Live Perimeter</span></div>
@@ -409,6 +425,14 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--d
     <div style="display:flex;justify-content:space-between;margin-top:4px">
       <span style="font-family:var(--mono);font-size:0.65rem;color:var(--muted)" data-i18n="lastSegment">Last segment</span>
       <span style="font-family:var(--mono);font-size:0.85rem;font-weight:bold;color:var(--green)" id="liveLastSeg">—</span>
+    </div>
+  </div>
+
+  <!-- POLYGON LIST -->
+  <div class="c-head" id="hPolyList" onclick="tog('bPolyList','hPolyList')"><span>🗂 <span data-i18n="polygonList">Polygon List</span></span><span class="caret">▾</span></div>
+  <div class="c-body" id="bPolyList">
+    <div id="polyListContainer" style="display:flex;flex-direction:column;gap:4px;padding:4px 0">
+      <div style="font-family:var(--mono);font-size:0.68rem;color:var(--muted);text-align:center;padding:10px" id="polyListEmpty" data-i18n="noPolygonsYet">No polygons drawn yet</div>
     </div>
   </div>
 
@@ -579,7 +603,13 @@ const TRANSLATIONS = {
     toastSaved:    '✅ Polygon saved!',
     noPolygon:     'Draw a polygon first!',
     noSaved:       'No saved polygons.',
-    noSavedYet:    'No saved polygons yet',
+    btnMeasure:    'Measure Distance',
+    clearMeasure:  'Clear Measurement',
+    hintMeasureA:  '📏 Click point A on the map',
+    hintMeasureB:  '📏 Click to set point B',
+    hintMeasureClear: '📏 Right-click to clear measurement',
+    noPolygonsYet: 'No polygons drawn yet',
+    polygonList:   'Polygon List',
     noValidData:   'No valid polygon data found.',
     // mission report SweetAlerts
     swalAbortTitle:    '🚫 MISSION ABORT',
@@ -694,7 +724,13 @@ const TRANSLATIONS = {
     toastSaved:    '✅ ポリゴンを保存しました！',
     noPolygon:     'ポリゴンを描いてください！',
     noSaved:       '保存されたポリゴンがありません。',
-    noSavedYet:    '保存されたポリゴンがありません',
+    btnMeasure:    '距離計測',
+    clearMeasure:  '計測をクリア',
+    hintMeasureA:  '📏 地点Aをクリック',
+    hintMeasureB:  '📏 地点Bをクリック',
+    hintMeasureClear: '📏 右クリックで計測をクリア',
+    noPolygonsYet: 'ポリゴンがまだありません',
+    polygonList:   'ポリゴン一覧',
     noValidData:   '有効なポリゴンデータが見つかりません。',
     // mission report SweetAlerts
     swalAbortTitle:    '🚫 ミッション中止',
@@ -873,8 +909,25 @@ const polygonDrawer = new L.Draw.Polygon(map, {
   allowIntersection:false, showArea:false, metric:true, guidelineDistance:20
 });
 
-let transectLayers=[], labelMarkers=[], drawnPolygon=null, analysisResults=[], selectedIdx=-1;
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// MULTI-POLYGON SYSTEM
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+let transectLayers=[], labelMarkers=[], analysisResults=[], selectedIdx=-1;
 let labelsVisible=true, isDrawing=false, isEditing=false, editHandler=null;
+
+// Multi-polygon store: array of {id, layer, results, name, color}
+let polygonStore = [];
+let activePolyId  = null;
+const POLY_COLORS = ['#00e5ff','#ff9800','#b47cff','#00e676','#ff6d00','#ffe600','#ff3d3d','#4a8aff'];
+
+function getActivePoly() { return polygonStore.find(p => p.id === activePolyId) || null; }
+function getActiveLayer() { const p=getActivePoly(); return p ? p.layer : null; }
+
+// Keep drawnPolygon as alias for active layer (backward-compat for save/share/export functions)
+Object.defineProperty(window, 'drawnPolygon', {
+  get() { return getActiveLayer(); },
+  set(v) { /* no-op — managed by polygonStore */ }
+});
 
 const btnDraw = document.getElementById('btnDraw');
 const btnEdit = document.getElementById('btnEdit');
@@ -884,7 +937,7 @@ const hint    = document.getElementById('mapHint');
 btnDraw.addEventListener('click', () => {
   if (isEditing) stopEdit(false);
   if (isDrawing) { polygonDrawer.disable(); setDrawingMode(false); }
-  else { clearWidthResults(); polygonDrawer.enable(); setDrawingMode(true); }
+  else { polygonDrawer.enable(); setDrawingMode(true); }
 });
 btnUndo.addEventListener('click', undoLastPoint);
 document.addEventListener('keydown', e => {
@@ -894,36 +947,133 @@ function undoLastPoint() { if (isDrawing) polygonDrawer.deleteLastVertex && poly
 
 btnEdit.addEventListener('click', () => { if (isEditing) stopEdit(true); else startEdit(); });
 function startEdit() {
-  if (!drawnPolygon) return;
+  const active = getActivePoly();
+  if (!active) return;
   isEditing=true; clearWidthResults();
-  editHandler = new L.EditToolbar.Edit(map, { featureGroup:drawnItems });
+  editHandler = new L.EditToolbar.Edit(map, { featureGroup: L.featureGroup([active.layer]) });
   editHandler.enable();
   btnEdit.textContent = T().saveEdits; btnEdit.classList.add('edit-active'); btnDraw.disabled=true;
   hint.textContent = T().hintEdit; hint.className='map-hint show';
 }
 function stopEdit(save) {
   if (!editHandler) return;
-  if (save) { editHandler.save(); drawnPolygon=drawnItems.getLayers()[0]; if(drawnPolygon)runWidthAnalysis(drawnPolygon.toGeoJSON().geometry); }
-  else editHandler.revertLayers();
+  const active = getActivePoly();
+  if (save && active) {
+    editHandler.save();
+    active.layer = drawnItems.getLayers().find(l => l) || active.layer;
+    runWidthAnalysis(active.layer.toGeoJSON().geometry, active.id);
+  } else editHandler.revertLayers();
   editHandler.disable(); editHandler=null; isEditing=false;
   btnEdit.textContent = T().editPoints; btnEdit.classList.remove('edit-active'); btnDraw.disabled=false;
   hint.className='map-hint';
 }
 document.getElementById('btnClearWidth').addEventListener('click', () => {
   if (isEditing) stopEdit(false);
-  polygonDrawer.disable(); setDrawingMode(false); clearWidthAll();
+  polygonDrawer.disable(); setDrawingMode(false); clearAllPolygons();
 });
 function setDrawingMode(on) {
   isDrawing=on;
   btnDraw.innerHTML = on ? T().cancelDrawing : ('✏ <span data-i18n="btnDraw">'+T().drawPolygon+'</span>');
   btnDraw.classList.toggle('active',on);
-  btnEdit.style.display='none';
   if(on){hint.textContent=T().hintDraw;hint.className='map-hint show';}
   else hint.className='map-hint';
 }
 
-// Live distance
-let liveVertices=[], liveMouseLatLng=null;
+function addPolygonToStore(layer) {
+  const id = Date.now();
+  const color = POLY_COLORS[polygonStore.length % POLY_COLORS.length];
+  const name  = 'Polygon ' + (polygonStore.length + 1);
+  layer.setStyle({ color, weight:2.5, fillColor:color, fillOpacity:0.09, dashArray:'7 5' });
+  layer.on('click', () => selectPolygon(id));
+  drawnItems.addLayer(layer);
+  polygonStore.push({ id, layer, name, color, results:[], pct:null });
+  selectPolygon(id);
+  renderPolyList();
+  return id;
+}
+
+function selectPolygon(id) {
+  activePolyId = id;
+  // Style: dim non-active, highlight active
+  polygonStore.forEach(p => {
+    p.layer.setStyle({
+      opacity: p.id === id ? 1 : 0.35,
+      fillOpacity: p.id === id ? 0.12 : 0.04,
+      weight: p.id === id ? 2.8 : 1.8,
+    });
+  });
+  // Show edit button for active
+  btnEdit.style.display = 'block';
+  // Load that polygon's transects
+  clearWidthResults();
+  const poly = polygonStore.find(p => p.id === id);
+  if (poly && poly.results.length > 0) {
+    analysisResults = poly.results;
+    const threshold = parseInt(document.getElementById('thresholdInput').value) || 400;
+    redrawTransects();
+    updateStats(analysisResults, threshold);
+    renderTransectList(analysisResults);
+    renderMissionReport(analysisResults, threshold);
+  }
+  renderPolyList();
+}
+
+function deletePolygonFromStore(id) {
+  const idx = polygonStore.findIndex(p => p.id === id);
+  if (idx === -1) return;
+  drawnItems.removeLayer(polygonStore[idx].layer);
+  polygonStore.splice(idx, 1);
+  if (activePolyId === id) {
+    activePolyId = polygonStore.length > 0 ? polygonStore[polygonStore.length-1].id : null;
+    clearWidthResults();
+    if (activePolyId) selectPolygon(activePolyId);
+    else btnEdit.style.display='none';
+  }
+  renderPolyList();
+}
+
+function clearAllPolygons() {
+  polygonStore.forEach(p => drawnItems.removeLayer(p.layer));
+  polygonStore = [];
+  activePolyId = null;
+  clearWidthAll();
+  btnEdit.style.display='none';
+  renderPolyList();
+}
+
+function renderPolyList() {
+  const container = document.getElementById('polyListContainer');
+  const empty     = document.getElementById('polyListEmpty');
+  if (!container) return;
+  if (polygonStore.length === 0) {
+    container.innerHTML = '';
+    container.appendChild(empty || Object.assign(document.createElement('div'), {
+      style:'font-family:var(--mono);font-size:0.68rem;color:var(--muted);text-align:center;padding:10px',
+      textContent: T().noPolygonsYet || 'No polygons drawn yet'
+    }));
+    return;
+  }
+  container.innerHTML = polygonStore.map(p => {
+    const pctText = p.pct !== null ? `${p.pct}%` : '—';
+    const pctColor = p.pct === null ? 'var(--muted)' : p.pct >= 80 ? 'var(--green)' : p.pct >= 40 ? 'var(--yellow)' : 'var(--red)';
+    const isActive = p.id === activePolyId;
+    return `<div class="poly-item${isActive?' active':''}" onclick="selectPolygon(${p.id})">
+      <div class="poly-dot" style="background:${p.color};border-color:${p.color}"></div>
+      <span class="poly-name">${p.name}</span>
+      <span class="poly-pct" style="color:${pctColor}">${pctText}</span>
+      <button class="poly-del" onclick="event.stopPropagation();deletePolygonFromStore(${p.id})" title="Delete">✕</button>
+    </div>`;
+  }).join('');
+}
+
+// Override draw:created to support multiple polygons
+map.on(L.Draw.Event.CREATED, e => {
+  setDrawingMode(false);
+  document.getElementById('liveDistBox').style.display='none';
+  const id = addPolygonToStore(e.layer);
+  runWidthAnalysis(e.layer.toGeoJSON().geometry, id);
+  checkZoneWarnings(e.layer.toGeoJSON());
+});
 map.on('draw:drawstart', () => { liveVertices=[]; updateLiveDist(); document.getElementById('liveDistBox').style.display='block'; });
 map.on('draw:drawstop',  () => { document.getElementById('liveDistBox').style.display='none'; liveVertices=[]; liveMouseLatLng=null; });
 map.on('click', () => {
@@ -950,15 +1100,6 @@ function updateLiveDist() {
   if(n>=2){document.getElementById('liveLastSeg').textContent=Math.round(turf.distance(liveVertices[n-2],liveVertices[n-1],{units:'meters'}))+' m';}
   else document.getElementById('liveLastSeg').textContent='—';
 }
-map.on(L.Draw.Event.CREATED, e => {
-  setDrawingMode(false);
-  document.getElementById('liveDistBox').style.display='none';
-  drawnPolygon=e.layer; drawnItems.clearLayers(); drawnItems.addLayer(drawnPolygon);
-  btnEdit.style.display='block';
-  runWidthAnalysis(drawnPolygon.toGeoJSON().geometry);
-  checkZoneWarnings(drawnPolygon.toGeoJSON());
-});
-
 function mainAxisBearing(polygon) {
   const coords=turf.getCoords(polygon)[0]; let maxD=0,ptA,ptB;
   for(let i=0;i<coords.length;i++) for(let j=i+1;j<coords.length;j++){
@@ -990,31 +1131,46 @@ function computeTransects(polygon,threshold,interval) {
   }
   return results;
 }
-function runWidthAnalysis(geometry) {
+function runWidthAnalysis(geometry, polyId) {
   const threshold=parseInt(document.getElementById('thresholdInput').value)||400;
   document.getElementById('loadingOverlay').classList.add('show');
+  const targetId = polyId || activePolyId;
   setTimeout(()=>{
     try{
       clearWidthResults();
-      map.fitBounds(drawnPolygon.getBounds(),{padding:[20,20]});
+      const poly = polygonStore.find(p => p.id === targetId);
+      if (poly) map.fitBounds(poly.layer.getBounds(),{padding:[20,20]});
       analysisResults=computeTransects(turf.feature(geometry),threshold,100);
-      analysisResults.forEach((r,idx)=>{
-        const color=r.status==='nogo'?'#ff3d3d':r.status==='warn'?'#ffe600':'#00e676';
-        const w=r.status==='nogo'?2.5:r.status==='warn'?2:1.5, op=r.status==='nogo'?0.95:r.status==='warn'?0.85:0.6;
-        const line=L.polyline(r.coords.map(c=>[c[1],c[0]]),{color,weight:w,opacity:op});
-        const tipLabel=r.status==='nogo'?'🚫 NO-FLY':r.status==='warn'?'⚠ WARNING':'✅ OK';
-        line.bindTooltip(`#${r.index} · ${r.width}m · ${tipLabel}`,{sticky:true});
-        line.on('click',()=>selectTransect(idx)); line.addTo(map); transectLayers.push(line);
-        const midLat=(r.coords[0][1]+r.coords[1][1])/2,midLon=(r.coords[0][0]+r.coords[1][0])/2;
-        const cls=r.status==='nogo'?'wide':r.status==='warn'?'warn':'ok';
-        const icon=L.divIcon({className:'dist-label',html:`<div class="dist-label-inner ${cls}">${r.width}m</div>`,iconAnchor:[22,10]});
-        const marker=L.marker([midLat,midLon],{icon,interactive:false,zIndexOffset:600});
-        if(labelsVisible)marker.addTo(map); labelMarkers.push(marker);
-      });
+      // Store results on polygon
+      if (poly) {
+        poly.results = analysisResults;
+        const ok = analysisResults.filter(r=>r.status==='ok').length;
+        poly.pct = analysisResults.length ? Math.round(ok/analysisResults.length*100) : 0;
+        renderPolyList();
+      }
+      redrawTransects();
       updateStats(analysisResults,threshold); renderTransectList(analysisResults); renderMissionReport(analysisResults,threshold);
     }catch(err){console.error(err);alert('Error: '+err.message);}
     document.getElementById('loadingOverlay').classList.remove('show');
   },80);
+}
+function redrawTransects() {
+  transectLayers.forEach(l=>map.removeLayer(l)); transectLayers=[];
+  labelMarkers.forEach(m=>map.removeLayer(m)); labelMarkers=[];
+  const threshold=parseInt(document.getElementById('thresholdInput').value)||400;
+  analysisResults.forEach((r,idx)=>{
+    const color=r.status==='nogo'?'#ff3d3d':r.status==='warn'?'#ffe600':'#00e676';
+    const w=r.status==='nogo'?2.5:r.status==='warn'?2:1.5, op=r.status==='nogo'?0.95:r.status==='warn'?0.85:0.6;
+    const line=L.polyline(r.coords.map(c=>[c[1],c[0]]),{color,weight:w,opacity:op});
+    const tipLabel=r.status==='nogo'?'🚫 NO-FLY':r.status==='warn'?'⚠ WARNING':'✅ OK';
+    line.bindTooltip(`#${r.index} · ${r.width}m · ${tipLabel}`,{sticky:true});
+    line.on('click',()=>selectTransect(idx)); line.addTo(map); transectLayers.push(line);
+    const midLat=(r.coords[0][1]+r.coords[1][1])/2,midLon=(r.coords[0][0]+r.coords[1][0])/2;
+    const cls=r.status==='nogo'?'wide':r.status==='warn'?'warn':'ok';
+    const icon=L.divIcon({className:'dist-label',html:`<div class="dist-label-inner ${cls}">${r.width}m</div>`,iconAnchor:[22,10]});
+    const marker=L.marker([midLat,midLon],{icon,interactive:false,zIndexOffset:600});
+    if(labelsVisible)marker.addTo(map); labelMarkers.push(marker);
+  });
 }
 function clearWidthResults() {
   transectLayers.forEach(l=>map.removeLayer(l)); transectLayers=[];
@@ -1024,8 +1180,9 @@ function clearWidthResults() {
   document.getElementById('hTransects').style.display='none';
   ['statTotal','statWide','statNormal','statMax','statMin','statLength','statAvg'].forEach(id=>document.getElementById(id).textContent='—');
 }
-function clearWidthAll(){clearWidthResults();drawnItems.clearLayers();drawnPolygon=null;}
-function updateStats(results,threshold) {
+function clearWidthAll(){clearWidthResults();}
+function updateStats(results, threshold) {
+  if (!results || !results.length) return;
   const nogo=results.filter(r=>r.status==='nogo'), warn=results.filter(r=>r.status==='warn'), ok=results.filter(r=>r.status==='ok');
   const wide=results.filter(r=>r.isWide),ws=results.map(r=>r.width);
   document.getElementById('statTotal').textContent=results.length;
@@ -1105,13 +1262,13 @@ function savePolygon(){
 }
 function loadPolygon(id){
   const entry=getSaved().find(e=>e.id===id); if(!entry)return;
-  polygonDrawer.disable(); setDrawingMode(false); if(isEditing)stopEdit(false); clearWidthAll();
-  drawnPolygon=L.geoJSON(entry.geojson).getLayers()[0];
-  drawnPolygon.setStyle({color:'#ff9800',weight:2.5,fillColor:'#ff9800',fillOpacity:0.09,dashArray:'7 5'});
-  drawnItems.clearLayers(); drawnItems.addLayer(drawnPolygon);
-  btnEdit.style.display='block';
-  map.fitBounds(drawnPolygon.getBounds(),{padding:[20,20]});
-  runWidthAnalysis(entry.geojson.geometry);
+  polygonDrawer.disable(); setDrawingMode(false); if(isEditing)stopEdit(false);
+  const layer=L.geoJSON(entry.geojson).getLayers()[0];
+  const pid = addPolygonToStore(layer);
+  const poly = polygonStore.find(p=>p.id===pid);
+  if(poly){ poly.name=entry.name; renderPolyList(); }
+  map.fitBounds(layer.getBounds(),{padding:[20,20]});
+  runWidthAnalysis(entry.geojson.geometry, pid);
   showToast('📂 Loaded: '+entry.name);
 }
 function deletePolygon(id){setSaved(getSaved().filter(e=>e.id!==id));renderRecentList();}
@@ -1854,14 +2011,13 @@ function airportCircle(ap) {
   return turf.circle([ap.lng, ap.lat], ap.r, { units:'kilometers', steps:64 });
 }
 
-// Sample DID tile at a coordinate — returns true if the tile pixel is non-transparent (= DID area)
+// Sample DID tile — 404 = no DID area (rural), resolve(false) silently
 function checkDIDTile(lat, lng) {
   return new Promise(resolve => {
     const zoom = 13;
     const x = Math.floor((lng + 180) / 360 * Math.pow(2, zoom));
     const latRad = lat * Math.PI / 180;
     const y = Math.floor((1 - Math.log(Math.tan(latRad) + 1/Math.cos(latRad)) / Math.PI) / 2 * Math.pow(2, zoom));
-    // Compute pixel position within tile
     const tileSize = 256;
     const worldSize = tileSize * Math.pow(2, zoom);
     const px = Math.floor(((lng + 180) / 360 * worldSize) % tileSize);
@@ -1869,7 +2025,8 @@ function checkDIDTile(lat, lng) {
     const py = Math.floor(pyWorld % tileSize);
 
     const img = new Image();
-    img.crossOrigin = 'anonymous';
+    // crossOrigin omitted intentionally — DID tiles don't send CORS headers,
+    // so we check alpha via a tainted canvas (catches SecurityError) or onerror (404)
     img.onload = () => {
       try {
         const canvas = document.createElement('canvas');
@@ -1877,11 +2034,14 @@ function checkDIDTile(lat, lng) {
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0);
         const pixel = ctx.getImageData(px, py, 1, 1).data;
-        // DID tiles are purple/semi-transparent — if alpha > 20, it's DID
-        resolve(pixel[3] > 20);
-      } catch(e) { resolve(false); }
+        resolve(pixel[3] > 20);  // alpha > 20 = DID overlay present
+      } catch(e) {
+        // SecurityError from tainted canvas = tile loaded but CORS blocked pixel read
+        // Treat as DID present (conservative) only if it actually loaded (not 404)
+        resolve(img.naturalWidth > 0);
+      }
     };
-    img.onerror = () => resolve(false);
+    img.onerror = () => resolve(false);  // 404 or network error = not DID, no console spam needed
     img.src = `https://cyberjapandata.gsi.go.jp/xyz/did2020/${zoom}/${x}/${y}.png`;
   });
 }
@@ -1990,7 +2150,10 @@ async function checkZoneWarnings(geojson) {
       showCancelButton: true,
       cancelButtonText: '🔗 DIPS 2.0',
     }).then(r => {
-      if (!r.isConfirmed) window.open('https://www.ossportal.dips.mlit.go.jp/portal/top/', '_blank');
+      // Only open DIPS if user explicitly clicked the "DIPS 2.0" cancel button
+      if (r.dismiss === Swal.DismissReason.cancel) {
+        window.open('https://www.ossportal.dips.mlit.go.jp/portal/top/', '_blank');
+      }
     });
   }
   // If no violations — no alert (mission report success toast handles it)
@@ -2106,7 +2269,106 @@ window.addEventListener('load', () => {
 
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// LOCATE ME — fly to device GPS position, like Google Maps
+// MEASURE — click A, drag to see live line, click B = distance
+//            right-click anywhere to delete
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+let isMeasuring  = false;
+let measureA     = null;
+let measureLayers = [];
+let measureRubber = null;
+
+function toggleMeasure() {
+  if (measureLayers.length > 0 || isMeasuring) { _clearMeasure(); return; }
+  isMeasuring = true;
+  if (isDrawing) { polygonDrawer.disable(); setDrawingMode(false); }
+
+  document.getElementById('btnMeasure').classList.add('measure-active');
+  map.getContainer().style.cursor = 'crosshair';
+  hint.textContent = T().hintMeasureA || '📏 Click to set point A';
+  hint.className = 'map-hint show';
+
+  map.once('click', _measurePickA);
+  map.on('contextmenu', _measureRightClick);
+}
+
+function _measurePickA(e) {
+  measureA = e.latlng;
+
+  const dotA = L.circleMarker(measureA, {
+    radius:7, color:'#00e676', fillColor:'#00e676', fillOpacity:1, weight:2.5, interactive:false
+  }).addTo(map);
+  const lblA = L.marker(measureA, {
+    icon: L.divIcon({ className:'', html:'<div class="measure-label">A</div>', iconAnchor:[-8,8] }),
+    interactive:false
+  }).addTo(map);
+  measureLayers.push(dotA, lblA);
+
+  hint.textContent = T().hintMeasureB || '📏 Click to set point B';
+  map.on('mousemove', _measureDrag);
+  map.once('click', _measurePickB);
+}
+
+function _measureDrag(e) {
+  if (!measureA) return;
+  if (measureRubber) map.removeLayer(measureRubber);
+  measureRubber = L.polyline([measureA, e.latlng], {
+    color:'#00e676', weight:2, opacity:0.55, dashArray:'6 5', interactive:false
+  }).addTo(map);
+}
+
+function _measurePickB(e) {
+  measureB = e.latlng;
+  map.off('mousemove', _measureDrag);
+  if (measureRubber) { map.removeLayer(measureRubber); measureRubber = null; }
+
+  // Haversine
+  const R=6371000, φ1=measureA.lat*Math.PI/180, φ2=measureB.lat*Math.PI/180;
+  const Δφ=(measureB.lat-measureA.lat)*Math.PI/180, Δλ=(measureB.lng-measureA.lng)*Math.PI/180;
+  const a=Math.sin(Δφ/2)**2+Math.cos(φ1)*Math.cos(φ2)*Math.sin(Δλ/2)**2;
+  const dist=R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+  const distStr=dist>=1000?(dist/1000).toFixed(3)+' km':Math.round(dist)+' m';
+
+  const mid=L.latLng((measureA.lat+measureB.lat)/2,(measureA.lng+measureB.lng)/2);
+  const dotB=L.circleMarker(measureB,{radius:7,color:'#00e676',fillColor:'#00e676',fillOpacity:1,weight:2.5,interactive:false}).addTo(map);
+  const line=L.polyline([measureA,measureB],{color:'#00e676',weight:2.5,dashArray:'6 4',interactive:false}).addTo(map);
+  const lblB=L.marker(measureB,{icon:L.divIcon({className:'',html:'<div class="measure-label">B</div>',iconAnchor:[-8,8]}),interactive:false}).addTo(map);
+  const lblD=L.marker(mid,{
+    icon:L.divIcon({className:'',iconAnchor:[0,10],
+      html:`<div class="measure-label" style="font-weight:bold;font-size:0.8rem;padding:5px 12px;background:#00e676;color:#000;border-color:#00e676">${distStr}</div>`}),
+    interactive:false,zIndexOffset:900
+  }).addTo(map);
+  measureLayers.push(dotB,line,lblB,lblD);
+
+  isMeasuring=false;
+  map.getContainer().style.cursor='';
+  hint.textContent=T().hintMeasureClear||'📏 Right-click to clear measurement';
+  hint.className='map-hint show';
+
+  const btn=document.getElementById('btnMeasure');
+  btn.classList.remove('measure-active');
+  btn.innerHTML='🗑 <span>'+(T().clearMeasure||'Clear Measurement')+'</span>';
+  btn.style.cssText='flex:1;border-color:var(--red);color:var(--red);background:rgba(255,61,61,0.08)';
+}
+
+function _measureRightClick(e) { _clearMeasure(); }
+
+function _clearMeasure() {
+  isMeasuring=false;
+  map.off('mousemove',_measureDrag);
+  map.off('click',_measurePickA);
+  map.off('click',_measurePickB);
+  map.off('contextmenu',_measureRightClick);
+  if(measureRubber){map.removeLayer(measureRubber);measureRubber=null;}
+  measureLayers.forEach(l=>map.removeLayer(l));
+  measureLayers=[];
+  measureA=null;
+  map.getContainer().style.cursor='';
+  hint.className='map-hint';
+  const btn=document.getElementById('btnMeasure');
+  btn.classList.remove('measure-active');
+  btn.style.cssText='flex:1;border-color:var(--green);color:var(--green)';
+  btn.innerHTML='📏 <span data-i18n="btnMeasure">'+(T().btnMeasure||'Measure Distance')+'</span>';
+}
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 let locateMarker = null;
 let locateCircle = null;
